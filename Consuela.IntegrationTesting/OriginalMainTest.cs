@@ -20,9 +20,9 @@ namespace Consuela.IntegrationTesting
 			p.SearchPaths.Add(new PathAndPattern(@"J:\Downloads\", "*"));
 			p.SearchPaths.Add(new PathAndPattern(@"J:\Dump\", "*"));
 
-			p.WhiteListFiles.Add(svc.WildCardToRegex(@"temp*.*"));
-			p.WhiteListDirectories.Add(@"J:\Dump\Don't delete\");
-			p.WhiteListDirectories.Add(@"J:\Dump\Scan dump\");
+			p.IgnoreListFiles.Add(svc.WildCardToRegex(@"temp*.*"));
+			p.IgnoreListDirectories.Add(@"J:\Dump\Don't delete\");
+			p.IgnoreListDirectories.Add(@"J:\Dump\Scan dump\");
 
 			var operations = svc.CleanUp(p, DryRun);
 

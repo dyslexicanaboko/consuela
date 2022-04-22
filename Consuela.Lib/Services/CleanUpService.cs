@@ -41,14 +41,14 @@ namespace Consuela.Lib.Services
 			}
 
 			//FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
-			p.WhiteListDirectories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
+			p.IgnoreListDirectories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
 
 			//Remove all whitelisted files
 			for (int i = lstFiles.Count - 1; i >= 0; i--)
 			{
 				var f = lstFiles[i].Name;
 
-				if (SkipFile(f, p.WhiteListFiles))
+				if (SkipFile(f, p.IgnoreListFiles))
 					lstFiles.RemoveAt(i);
 			}
 
