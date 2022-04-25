@@ -3,6 +3,7 @@
 	public class Delete
 		: IEquatable<Delete>
 	{
+		/// <summary>How many days old a file is kept until it is deleted.</summary>
 		public int FileAgeThreshold { get; set; }
 
 		//TODO: need to make sure this is distinct

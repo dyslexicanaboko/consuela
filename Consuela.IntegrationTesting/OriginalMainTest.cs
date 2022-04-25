@@ -2,7 +2,6 @@
 using Consuela.Lib.Services;
 using Consuela.Lib.Services.ProfileManagement;
 using NUnit.Framework;
-using System.IO;
 
 namespace Consuela.IntegrationTesting
 {
@@ -13,9 +12,13 @@ namespace Consuela.IntegrationTesting
 
 		public void Original_LinqPad_main_method()
 		{
-			var svc = new CleanUpService();
-
 			var p = new ProfileWatcher();
+
+			var logging = new LoggingService(p);
+
+			var svc = new CleanUpService(
+				logging,
+				new FileService());
 
 			p.Delete.Paths.Add(new PathAndPattern(@"J:\Downloads\", "*"));
 			p.Delete.Paths.Add(new PathAndPattern(@"J:\Dump\", "*"));
@@ -24,13 +27,7 @@ namespace Consuela.IntegrationTesting
 			p.Ignore.Directories.Add(@"J:\Dump\Don't delete\");
 			p.Ignore.Directories.Add(@"J:\Dump\Scan dump\");
 
-			var operations = svc.CleanUp(p, DryRun);
-
-			var path = Path.Combine(p.Logging.Path, "Delete operations.log");
-
-			var txt = svc.GetText(operations);
-
-			File.AppendAllText(path, txt);
+			svc.CleanUp(p, DryRun);
 		}
 	}
 }

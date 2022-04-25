@@ -4,6 +4,7 @@ using System.IO;
 
 namespace Consuela.Lib.Services
 {
+    //Not sure if I will need this right now or at all
     public class ConfigurationService : IConfigurationService
     {
         private const string DefaultConfigName = "appsettings.json";

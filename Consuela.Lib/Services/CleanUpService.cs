@@ -7,170 +7,159 @@ using System.Text.RegularExpressions;
 
 namespace Consuela.Lib.Services
 {
-	public class CleanUpService
-	{
-		const int Days = 30;
+    public class CleanUpService : ICleanUpService
+    {
+        private readonly ILoggingService _loggingService;
+        private readonly IFileService _fileService;
 
-		//TODO: This can't stay here, should be in its own logging service
-		public string GetText(List<string> logs)
-		{
-			var n = Environment.NewLine;
+        public CleanUpService(
+            ILoggingService loggingService,
+            IFileService fileService)
+        {
+            _loggingService = loggingService;
 
-			var header = $"{DateTime.Now:yyyy.MM.dd HH:mm:ss}{n}===================================================={n}";
+            _fileService = fileService;
+        }
 
-			var body = string.Join(n, logs);
+        //Might want to consider returning statistics of some kind
+        public void CleanUp(IProfile profile, bool dryRun)
+        {
+            var p = profile;
 
-			var final = header + body + n + n;
+            var lstFiles = new List<FileInfoEntity>();
 
-			return final;
-		}
+            //Get files to delete
+            foreach (var obj in p.Delete.Paths)
+            {
+                lstFiles.AddRange(_fileService.GetFiles(obj, profile.Delete.FileAgeThreshold));
+            }
 
-		public List<string> CleanUp(IProfile profile, bool dryRun)
-		{
-			var p = profile;
+            //FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
+            p.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
 
-			var operations = new List<string>();
+            //Remove all whitelisted files
+            for (int i = lstFiles.Count - 1; i >= 0; i--)
+            {
+                var f = lstFiles[i].Name;
 
-			var lstFiles = new List<FileInfo>();
+                if (SkipFile(f, p.Ignore.Files))
+                    lstFiles.RemoveAt(i);
+            }
 
-			//Get files to delete
-			foreach (PathAndPattern obj in p.Delete.Paths)
-			{
-				lstFiles.AddRange(new DirectoryInfo(obj.Path).GetFiles(obj.Pattern, SearchOption.AllDirectories)
-													 .Where(x => (DateTime.Now - x.CreationTime).Days > Days)
-													.ToList());
-			}
+            //Order by creation time
+            lstFiles = lstFiles.OrderBy(x => x.CreationTime).ToList();
 
-			//FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
-			p.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
+            _loggingService.Log($"Deleted Files {lstFiles.Count}");
 
-			//Remove all whitelisted files
-			for (int i = lstFiles.Count - 1; i >= 0; i--)
-			{
-				var f = lstFiles[i].Name;
+            //Delete the individual files
+            foreach (var f in lstFiles)
+            {
+                try
+                {
+                    _loggingService.Log(f);
 
-				if (SkipFile(f, p.Ignore.Files))
-					lstFiles.RemoveAt(i);
-			}
+                    if (!dryRun) _fileService.DeleteFile(f);
+                }
+                catch (Exception ex)
+                {
+                    //Oh well
+                    _loggingService.Log(ex);
+                }
+            }
 
-			//Order by creation time
-			lstFiles = lstFiles.OrderBy(x => x.CreationTime).ToList();
+            var lstFolders = FindEmptyFoldersToDelete(lstFiles, p.Delete.Paths);
 
-			Console.WriteLine($"Deleted Files {lstFiles.Count}");
+            _loggingService.Log($"Deleted Directories {lstFolders.Count}");
 
-			//Delete the individual files
-			foreach (var x in lstFiles)
-			{
-				try
-				{
-					operations.Add($"File,{x.CreationTime:yyyy/MM/dd HH:mm:ss},{x.DirectoryName},{x.Name}");
+            //Lastly delete the folders that are empty, but not the search paths
+            foreach (var folder in lstFolders)
+            {
+                try
+                {
+                    _loggingService.Log($"Directory,NULL,{folder},NULL");
 
-					if (!dryRun) File.Delete(x.FullName);
-				}
-				catch (Exception ex)
-				{
-					//Oh well
-					Console.WriteLine(ex.Message);
-				}
-			}
+                    if (!dryRun) _fileService.DeleteDirectory(folder);
+                }
+                catch (Exception ex)
+                {
+                    //Oh well
+                    _loggingService.Log(ex);
+                }
+            }
+        }
 
-			var lstFolders = FindEmptyFoldersToDelete(lstFiles, p.Delete.Paths);
+        //Get the folders to delete ultimately that are empty after files have been deleted
+        private List<string> FindEmptyFoldersToDelete(List<FileInfoEntity> files, List<PathAndPattern> searchPaths)
+        {
+            //Unfortunately because of the PathTooLongException I have to jump through hoops to make this work
+            List<string> lst =
+                files
+                    .Select(x => x.FullName)
+                    .Distinct()
+                    .ToList();
 
-			Console.WriteLine($"Deleted Directories {lstFolders.Count}");
+            //Get distinct paths manually
+            var paths = new List<string>();
 
-			//Lastly delete the folders that are empty, but not the search paths
-			foreach (var folder in lstFolders)
-			{
-				try
-				{
-					operations.Add($"Directory,NULL,{folder},NULL");
+            for (var i = lst.Count - 1; i > 0; i--)
+            {
+                try
+                {
+                    var filePath = lst[i];
 
-					if (!dryRun) Directory.Delete(folder, true);
-				}
-				catch (Exception ex)
-				{
-					//Oh well
-					Console.WriteLine(ex.Message);
-				}
-			}
+                    var path = Path.GetDirectoryName(filePath);
 
-			return operations;
-		}
+                    //Remove all white listed paths
+                    if (searchPaths.Any(p => p.Path == path)) continue;
 
-		//Get the folders to delete ultimately that are empty after files have been deleted
-		private List<string> FindEmptyFoldersToDelete(List<FileInfo> files, List<PathAndPattern> searchPaths)
-		{
-			//Unfortunately because of the PathTooLongException I have to jump through hoops to make this work
-			List<string> lst =
-				files
-					.Select(x => x.FullName)
-					.Distinct()
-					.ToList();
+                    //Make the list distinct manually
+                    if (!paths.Contains(path))
+                        paths.Add(path);
+                }
+                catch (PathTooLongException ptle)
+                {
+                    //Just leave these files behind because of this exception
+                    _loggingService.Log(ptle.Message);
+                }
+            }
 
-			//Get distinct paths manually
-			var paths = new List<string>();
+            //Remove all directories that aren't empty
+            for (var i = paths.Count - 1; i > 0; i--)
+            {
+                try
+                {
+                    var path = paths[i];
 
-			for (var i = lst.Count - 1; i > 0; i--)
-			{
-				try
-				{
-					var filePath = lst[i];
+                    if (_fileService.PathContainsFiles(path))
+                    {
+                        lst.RemoveAt(i);
+                    }
+                }
+                catch (PathTooLongException ptle)
+                {
+                    //TODO: Needs to be logged properly
+                    //Just leave these files behind because of this exception
+                    _loggingService.Log(ptle.Message);
+                }
+            }
 
-					var path = Path.GetDirectoryName(filePath);
+            return paths;
+        }
 
-					//Remove all white listed paths
-					if (searchPaths.Any(p => p.Path == path)) continue;
+        private bool SkipFile(string value, IList<string> whiteList)
+        {
+            foreach (string r in whiteList)
+            {
+                if (Regex.IsMatch(value, r, RegexOptions.IgnoreCase))
+                    return true;
+            }
 
-					//Make the list distinct manually
-					if (!paths.Contains(path))
-						paths.Add(path);
-				}
-				catch (PathTooLongException ptle)
-				{
-					//Just leave these files behind because of this exception
-					Console.WriteLine(ptle.Message);
-				}
-			}
+            return false;
+        }
 
-			//Remove all directories that aren't empty
-			for (var i = paths.Count - 1; i > 0; i--)
-			{
-				try
-				{
-					var path = paths[i];
-
-					var di = new DirectoryInfo(path);
-
-					if (di.EnumerateFiles().Any())
-					{
-						lst.RemoveAt(i);
-					}
-				}
-				catch (PathTooLongException ptle)
-				{
-					//TODO: Needs to be logged properly
-					//Just leave these files behind because of this exception
-					Console.WriteLine(ptle.Message);
-				}
-			}
-
-			return paths;
-		}
-
-		private bool SkipFile(string value, IList<string> whiteList)
-		{
-			foreach (string r in whiteList)
-			{
-				if (Regex.IsMatch(value, r, RegexOptions.IgnoreCase))
-					return true;
-			}
-
-			return false;
-		}
-
-		public string WildCardToRegex(string value)
-		{
-			return "^" + Regex.Escape(value).Replace("\\*", ".*") + "$";
-		}
-	}
+        public string WildCardToRegex(string value)
+        {
+            return "^" + Regex.Escape(value).Replace("\\*", ".*") + "$";
+        }
+    }
 }
