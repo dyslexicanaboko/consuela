@@ -29,15 +29,15 @@ namespace Consuela.Lib.Services
             var lstFiles = new List<FileInfoEntity>();
 
             //Get files to delete
-            foreach (var obj in p.Delete.Paths)
+            foreach (var target in p.Delete.Paths)
             {
-                lstFiles.AddRange(_fileService.GetFiles(obj, profile.Delete.FileAgeThreshold));
+                lstFiles.AddRange(_fileService.GetFiles(target, profile.Delete.FileAgeThreshold));
             }
 
             //FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
             p.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
 
-            //Remove all whitelisted files
+            //Remove all ignored files
             for (int i = lstFiles.Count - 1; i >= 0; i--)
             {
                 var f = lstFiles[i].Name;

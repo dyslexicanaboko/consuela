@@ -1,7 +1,7 @@
 ﻿using Consuela.Entity;
 using NUnit.Framework;
 
-namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
+namespace Consuela.UnitTesting.EntityTests
 {
     [TestFixture]
     internal class PathAndPatternTests
