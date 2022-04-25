@@ -4,6 +4,7 @@ using System;
 namespace Consuela.UnitTesting
 {
     internal abstract class CompareTestBase<T>
+        : TestBase
         where T : class, IEquatable<T>, new()
     {
         [Test]
@@ -64,23 +65,5 @@ namespace Consuela.UnitTesting
         protected abstract T GetFilledObject();
 
         public abstract void Objects_are_not_equal();
-
-        protected void AssertAreEqual(T left, T right)
-        {
-            //Act
-            var areEqual = Equals(left, right); // left.Equals(right) and == won't work here
-
-            //Assert
-            Assert.IsTrue(areEqual);
-        }
-
-        protected void AssertAreNotEqual(T left, T right)
-        {
-            //Act
-            var areEqual = Equals(left, right); // left.Equals(right) and == won't work here
-
-            //Assert
-            Assert.IsFalse(areEqual);
-        }
     }
 }

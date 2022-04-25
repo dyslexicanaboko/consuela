@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Consuela.Entity;
+using Consuela.Entity.ProfileParts;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 
@@ -8,8 +10,11 @@ namespace Consuela.Lib.Services.ProfileManagement
     /// Handles the loading and saving of the <see cref="ProfileManager"/> class which has a
     /// reference to the <seealso cref="Entity.IProfile"/>.
     /// </summary>
-    public class ProfileSaver
+    public class ProfileSaver 
+        : IProfileSaver
     {
+        private const int ThirtyDays = 30;
+
         private readonly object _fileLock = new object();
 
         private readonly string _profileFilePath;
@@ -31,6 +36,8 @@ namespace Consuela.Lib.Services.ProfileManagement
                 _profileManager = JsonConvert.DeserializeObject<ProfileManager>(json);
                 _profileManager.RegisterSaveDelegate(SaveHandler);
 
+                SetDefaultsAsNeeded(_profileManager.Profile);
+
                 return _profileManager;
             }
         }
@@ -47,12 +54,15 @@ namespace Consuela.Lib.Services.ProfileManagement
             }
         }
 
-        //Parking this here for later use. Need to initialize the rolling log directory if no default is chosen.
-        private static string LoadDefaultsAsNeeded()
+        public void SetDefaultsAsNeeded(IProfile profile)
         {
-            var path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            if (profile.Delete.Schedule == null) profile.Delete.Schedule = new Schedule();
+            
+            if (profile.Delete.FileAgeThreshold == 0) profile.Delete.FileAgeThreshold = ThirtyDays;
 
-            return path;
+            if (string.IsNullOrWhiteSpace(profile.Logging.Path)) profile.Logging.Path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            if(profile.Logging.RetentionDays == 0) profile.Logging.RetentionDays = ThirtyDays;
         }
     }
 }

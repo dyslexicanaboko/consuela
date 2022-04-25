@@ -14,7 +14,7 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             var obj = new Delete();
             obj.FileAgeThreshold = 0;
             obj.Paths = new List<PathAndPattern> { new PathAndPattern("Path", "Pattern") };
-            obj.Schedule = new object();
+            obj.Schedule = new Schedule();
 
             return obj;
         }
@@ -28,7 +28,7 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             var right = new Delete();
             left.FileAgeThreshold = 1;
             left.Paths = new List<PathAndPattern> { new PathAndPattern("Path1", "Pattern1") };
-            left.Schedule = new { Idk = "Some random object" };
+            left.Schedule = new Schedule { TheNumberSeven = 8 };
 
             //Act / Assert
             AssertAreNotEqual(left, right);

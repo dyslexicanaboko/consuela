@@ -9,7 +9,8 @@
 		//TODO: need to make sure this is distinct
 		public List<PathAndPattern> Paths { get; set; } = new List<PathAndPattern>();
 
-		public object Schedule { get; set; } //TODO: Need to figure out what this looks like
+		//TODO: Need to figure out what this looks like
+		public Schedule Schedule { get; set; } = new Schedule();
 
 		public override bool Equals(object? obj) => Equals(obj as Delete);
 
@@ -36,8 +37,8 @@
 
 			var areEqual =
 				areEqualPaths &&
-				FileAgeThreshold == p.FileAgeThreshold;
-				//Schedule == p.Schedule; //This has to be left out until the schedule object is defined
+				FileAgeThreshold == p.FileAgeThreshold &&
+				Schedule == p.Schedule;
 
 			return areEqual;
 		}
