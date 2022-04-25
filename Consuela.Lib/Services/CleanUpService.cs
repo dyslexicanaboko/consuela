@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Consuela.Entity;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Consuela.Lib.Services
 	public class CleanUpService
 	{
 		const int Days = 30;
-		//string BasePath = Path.GetDirectoryName(Util.CurrentQueryPath);
 
+		//TODO: This can't stay here, should be in its own logging service
 		public string GetText(List<string> logs)
 		{
 			var n = Environment.NewLine;
@@ -24,7 +25,7 @@ namespace Consuela.Lib.Services
 			return final;
 		}
 
-		public List<string> CleanUp(Profile profile, bool dryRun)
+		public List<string> CleanUp(IProfile profile, bool dryRun)
 		{
 			var p = profile;
 
@@ -33,7 +34,7 @@ namespace Consuela.Lib.Services
 			var lstFiles = new List<FileInfo>();
 
 			//Get files to delete
-			foreach (PathAndPattern obj in p.SearchPaths)
+			foreach (PathAndPattern obj in p.Delete.Paths)
 			{
 				lstFiles.AddRange(new DirectoryInfo(obj.Path).GetFiles(obj.Pattern, SearchOption.AllDirectories)
 													 .Where(x => (DateTime.Now - x.CreationTime).Days > Days)
@@ -41,14 +42,14 @@ namespace Consuela.Lib.Services
 			}
 
 			//FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
-			p.IgnoreListDirectories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
+			p.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
 
 			//Remove all whitelisted files
 			for (int i = lstFiles.Count - 1; i >= 0; i--)
 			{
 				var f = lstFiles[i].Name;
 
-				if (SkipFile(f, p.IgnoreListFiles))
+				if (SkipFile(f, p.Ignore.Files))
 					lstFiles.RemoveAt(i);
 			}
 
@@ -73,7 +74,7 @@ namespace Consuela.Lib.Services
 				}
 			}
 
-			var lstFolders = FindEmptyFoldersToDelete(lstFiles, p.SearchPaths);
+			var lstFolders = FindEmptyFoldersToDelete(lstFiles, p.Delete.Paths);
 
 			Console.WriteLine($"Deleted Directories {lstFolders.Count}");
 
@@ -140,13 +141,14 @@ namespace Consuela.Lib.Services
 
 					var di = new DirectoryInfo(path);
 
-					if (di.EnumerateFiles().Count() > 0)
+					if (di.EnumerateFiles().Any())
 					{
 						lst.RemoveAt(i);
 					}
 				}
 				catch (PathTooLongException ptle)
 				{
+					//TODO: Needs to be logged properly
 					//Just leave these files behind because of this exception
 					Console.WriteLine(ptle.Message);
 				}

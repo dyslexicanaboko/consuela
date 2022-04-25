@@ -1,4 +1,4 @@
-﻿namespace Consuela.Lib
+﻿namespace Consuela.Entity
 {
     public class PathAndPattern
     {
