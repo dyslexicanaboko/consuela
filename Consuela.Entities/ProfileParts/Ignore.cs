@@ -30,28 +30,13 @@
 			}
 
 			//Perform bubble search loops
-			var areEqualFiles = AreDistinctListsEqual(Files, p.Files);
+			var areEqualFiles = Files.AreDistinctListsEqual(p.Files);
 
-			var areEqualDirectories = AreDistinctListsEqual(Directories, p.Directories);
+			var areEqualDirectories = Directories.AreDistinctListsEqual(p.Directories);
 
 			var areEqual = areEqualFiles && areEqualDirectories;
 
 			return areEqual;
-		}
-
-		//This comparison assumes no duplicates exist
-		private bool AreDistinctListsEqual<T>(List<T> primary, List<T> secondary)
-		{
-			if (primary.Count != secondary.Count) return false;
-
-			foreach (var item in primary)
-			{
-				if (secondary.Contains(item)) continue;
-
-				return false;
-			}
-
-			return true;
 		}
 
 		public override int GetHashCode() => (Files, Directories).GetHashCode();
