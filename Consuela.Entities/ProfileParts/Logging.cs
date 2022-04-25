@@ -3,10 +3,13 @@
 	public class Logging
 		: IEquatable<Logging>
 	{
+		/// <summary>Set to false by default, Disable logging.</summary>
 		public bool Disable { get; set; }
 
+		/// <summary>The path to where rolling log files are stored. By default stored where the executable is located.</summary>
 		public string Path { get; set; }
 
+		/// <summary>The number of days to keep the rolling log files.</summary>
 		public int RetentionDays { get; set; }
 
 		public override bool Equals(object? obj) => Equals(obj as Logging);

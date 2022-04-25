@@ -14,8 +14,10 @@
 			Pattern = pattern;
 		}
 
+		/// <summary>The path to search for files and folders to delete using the provided pattern.</summary>
 		public string Path { get; set; }
 
+		/// <summary>The wild card file pattern to use for finding files to delete in the provided path.</summary>
 		public string Pattern { get; set; }
 
 		public override bool Equals(object? obj) => Equals(obj as PathAndPattern);

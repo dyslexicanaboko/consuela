@@ -12,7 +12,9 @@ namespace Consuela.IntegrationTesting
 
 		public void Original_LinqPad_main_method()
 		{
-			var p = new ProfileWatcher();
+			var profileSaver = new ProfileSaver();
+			var profileManager = profileSaver.Load();
+			var p = profileManager.Profile;
 
 			var logging = new LoggingService(p);
 
@@ -28,6 +30,8 @@ namespace Consuela.IntegrationTesting
 			p.Ignore.Directories.Add(@"J:\Dump\Scan dump\");
 
 			svc.CleanUp(p, DryRun);
+
+			logging.SaveLog();
 		}
 	}
 }

@@ -4,8 +4,10 @@
 		 : IEquatable<Ignore>
 	{
 		//TODO: Need to prevent duplicates from being added
+		/// <summary>The files to ignore during clean up</summary>
 		public List<string> Files { get; set; } = new List<string>();
 
+		/// <summary>The directories to ignore during clean up</summary>
 		public List<string> Directories { get; set; } = new List<string>();
 
 		public override bool Equals(object? obj) => Equals(obj as Ignore);

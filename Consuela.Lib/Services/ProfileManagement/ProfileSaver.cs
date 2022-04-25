@@ -4,6 +4,10 @@ using System.IO;
 
 namespace Consuela.Lib.Services.ProfileManagement
 {
+    /// <summary>
+    /// Handles the loading and saving of the <see cref="ProfileManager"/> class which has a
+    /// reference to the <seealso cref="Entity.IProfile"/>.
+    /// </summary>
     public class ProfileSaver
     {
         private readonly object _fileLock = new object();
@@ -14,6 +18,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 
         public ProfileSaver()
         {
+            //Should this be injected? On the fence about it.
             _profileFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Profile.json");
         }
 
