@@ -11,7 +11,7 @@
 
 		public override bool Equals(object? obj) => Equals(obj as Logging);
 
-		public bool Equals(Logging p)
+		public bool Equals(Logging? p)
 		{
 			if (p is null)
 			{

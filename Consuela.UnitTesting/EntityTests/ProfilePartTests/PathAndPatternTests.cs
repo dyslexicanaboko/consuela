@@ -1,18 +1,16 @@
-﻿using Consuela.Entity.ProfileParts;
+﻿using Consuela.Entity;
 using NUnit.Framework;
 
 namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
 {
     [TestFixture]
-    internal class IgnoreTests
-        : CompareTestBase<Ignore>
+    internal class PathAndPatternTests
+        : CompareTestBase<PathAndPattern>
     {
-        protected override Ignore GetFilledObject()
+        protected override PathAndPattern GetFilledObject()
         {
             //Arrange
-            var obj = new Ignore();
-            obj.Files.Add("F");
-            obj.Directories.Add("D");
+            var obj = new PathAndPattern("Path", "Pattern");
 
             return obj;
         }
@@ -23,9 +21,7 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             //Arrange
             var left = GetFilledObject();
 
-            var right = new Ignore();
-            right.Files.Add("F1");
-            right.Directories.Add("D1");
+            var right = new PathAndPattern("Path1", "Pattern1");
 
             //Act / Assert
             AssertAreNotEqual(left, right);

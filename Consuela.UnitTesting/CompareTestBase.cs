@@ -50,7 +50,18 @@ namespace Consuela.UnitTesting
             AssertAreEqual(left, right);
         }
 
-        public abstract void Non_empty_objects_are_equal();
+        [Test]
+        public virtual void Non_empty_objects_are_equal()
+        {
+            //Arrange
+            var left = GetFilledObject();
+            var right = GetFilledObject();
+
+            //Act / Assert
+            AssertAreEqual(left, right);
+        }
+        
+        protected abstract T GetFilledObject();
 
         public abstract void Objects_are_not_equal();
 

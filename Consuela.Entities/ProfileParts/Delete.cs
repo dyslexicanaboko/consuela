@@ -12,7 +12,7 @@
 
 		public override bool Equals(object? obj) => Equals(obj as Delete);
 
-		public bool Equals(Delete p)
+		public bool Equals(Delete? p)
 		{
 			if (p is null)
 			{
@@ -35,8 +35,8 @@
 
 			var areEqual =
 				areEqualPaths &&
-				FileAgeThreshold == p.FileAgeThreshold &&
-				Schedule == p.Schedule;
+				FileAgeThreshold == p.FileAgeThreshold;
+				//Schedule == p.Schedule; //This has to be left out until the schedule object is defined
 
 			return areEqual;
 		}

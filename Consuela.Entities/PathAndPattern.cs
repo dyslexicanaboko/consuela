@@ -3,6 +3,11 @@
 	public class PathAndPattern
 		: IEquatable<PathAndPattern>
 	{
+		public PathAndPattern()
+		{ 
+			//For unit testing only
+		}
+
 		public PathAndPattern(string path, string pattern)
 		{
 			Path = System.IO.Path.GetDirectoryName(path);
@@ -15,7 +20,7 @@
 
 		public override bool Equals(object? obj) => Equals(obj as PathAndPattern);
 
-		public bool Equals(PathAndPattern p)
+		public bool Equals(PathAndPattern? p)
 		{
 			if (p is null)
 			{

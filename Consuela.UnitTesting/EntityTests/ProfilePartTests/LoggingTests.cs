@@ -4,15 +4,16 @@ using NUnit.Framework;
 namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
 {
     [TestFixture]
-    internal class IgnoreTests
-        : CompareTestBase<Ignore>
+    internal class LoggingTests
+        : CompareTestBase<Logging>
     {
-        protected override Ignore GetFilledObject()
+        protected override Logging GetFilledObject()
         {
             //Arrange
-            var obj = new Ignore();
-            obj.Files.Add("F");
-            obj.Directories.Add("D");
+            var obj = new Logging();
+            obj.RetentionDays = 1;
+            obj.Path = "P";
+            obj.Disable = true;
 
             return obj;
         }
@@ -23,9 +24,10 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             //Arrange
             var left = GetFilledObject();
 
-            var right = new Ignore();
-            right.Files.Add("F1");
-            right.Directories.Add("D1");
+            var right = new Logging();
+            right.RetentionDays = 2;
+            right.Path = "P1";
+            right.Disable = false;
 
             //Act / Assert
             AssertAreNotEqual(left, right);
