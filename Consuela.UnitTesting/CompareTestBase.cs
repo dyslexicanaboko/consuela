@@ -57,7 +57,7 @@ namespace Consuela.UnitTesting
         protected void AssertAreEqual(T left, T right)
         {
             //Act
-            var areEqual = left.Equals(right); // == won't work here
+            var areEqual = Equals(left, right); // left.Equals(right) and == won't work here
 
             //Assert
             Assert.IsTrue(areEqual);
@@ -66,7 +66,7 @@ namespace Consuela.UnitTesting
         protected void AssertAreNotEqual(T left, T right)
         {
             //Act
-            var areEqual = left.Equals(right); // == won't work here
+            var areEqual = Equals(left, right); // left.Equals(right) and == won't work here
 
             //Assert
             Assert.IsFalse(areEqual);

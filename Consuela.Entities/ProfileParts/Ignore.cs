@@ -10,7 +10,7 @@
 
 		public override bool Equals(object? obj) => Equals(obj as Ignore);
 
-		public bool Equals(Ignore p)
+		public bool Equals(Ignore? p)
 		{
 			if (p is null)
 			{
