@@ -6,25 +6,14 @@ namespace Consuela.UnitTesting.ServiceTests
 {
 	[TestFixture]
 	public class ProfileManagementTests
-		: TestBase
+		: ConsuelaTestBase
 	{
 		private readonly Mock<IProfileSaver> _profileSaverMock = new Mock<IProfileSaver>();
 
 		public ProfileManagementTests()
 		{
-			_profileSaverMock.Setup(x => x.Load()).Returns(LoadDefaultProfile());
+			_profileSaverMock.Setup(x => x.Load()).Returns(LoadDefaultProfileManager());
 			_profileSaverMock.Setup(s => s.Save());
-		}
-
-		private ProfileManager LoadDefaultProfile()
-		{
-			var profileManager = new ProfileManager();
-			profileManager.Profile = new ProfileWatcher();
-
-			var profileSaver = new ProfileSaver();
-			profileSaver.SetDefaultsAsNeeded(profileManager.Profile);
-
-			return profileManager;
 		}
 
 		[Test]

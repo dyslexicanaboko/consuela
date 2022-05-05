@@ -4,7 +4,8 @@ namespace Consuela.Lib.Services
 {
     public interface ICleanUpService
     {
-        void CleanUp(IProfile profile, bool dryRun);
+        CleanUpResults CleanUp(IProfile profile, bool dryRun);
+        
         string WildCardToRegex(string value);
     }
 }

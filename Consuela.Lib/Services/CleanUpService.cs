@@ -7,7 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace Consuela.Lib.Services
 {
-    public class CleanUpService : ICleanUpService
+    public class CleanUpService 
+        : ICleanUpService
     {
         private readonly ILoggingService _loggingService;
         private readonly IFileService _fileService;
@@ -22,28 +23,32 @@ namespace Consuela.Lib.Services
         }
 
         //Might want to consider returning statistics of some kind
-        public void CleanUp(IProfile profile, bool dryRun)
+        public CleanUpResults CleanUp(IProfile profile, bool dryRun)
         {
-            var p = profile;
+            var results = new CleanUpResults();
 
             var lstFiles = new List<FileInfoEntity>();
 
             //Get files to delete
-            foreach (var target in p.Delete.Paths)
+            foreach (var target in profile.Delete.Paths)
             {
                 lstFiles.AddRange(_fileService.GetFiles(target, profile.Delete.FileAgeThreshold));
             }
 
             //FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
-            p.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
+            profile.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
 
             //Remove all ignored files
             for (int i = lstFiles.Count - 1; i >= 0; i--)
             {
-                var f = lstFiles[i].Name;
+                var f = lstFiles[i];
 
-                if (SkipFile(f, p.Ignore.Files))
+                if (SkipFile(f.Name, profile.Ignore.Files))
+                {
+                    results.FilesIgnored.Add(f);
+
                     lstFiles.RemoveAt(i);
+                }
             }
 
             //Order by creation time
@@ -59,15 +64,19 @@ namespace Consuela.Lib.Services
                     _loggingService.Log(f);
 
                     if (!dryRun) _fileService.DeleteFile(f);
+
+                    results.FilesDeleted.Add(f);
                 }
                 catch (Exception ex)
                 {
+                    results.FileDeleteErrors.Add(f, ex);
+
                     //Oh well
                     _loggingService.Log(ex);
                 }
             }
 
-            var lstFolders = FindEmptyFoldersToDelete(lstFiles, p.Delete.Paths);
+            var lstFolders = FindEmptyFoldersToDelete(lstFiles, profile.Delete.Paths);
 
             _loggingService.Log($"Deleted Directories {lstFolders.Count}");
 
@@ -79,13 +88,19 @@ namespace Consuela.Lib.Services
                     _loggingService.Log($"Directory,NULL,{folder},NULL");
 
                     if (!dryRun) _fileService.DeleteDirectory(folder);
+
+                    results.DirectoriesDeleted.Add(folder);
                 }
                 catch (Exception ex)
                 {
+                    results.DirectoryDeleteErrors.Add(folder, ex);
+                    
                     //Oh well
                     _loggingService.Log(ex);
                 }
             }
+
+            return results;
         }
 
         //Get the folders to delete ultimately that are empty after files have been deleted
