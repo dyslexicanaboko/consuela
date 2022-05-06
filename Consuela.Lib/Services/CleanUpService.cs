@@ -172,9 +172,7 @@ namespace Consuela.Lib.Services
             return false;
         }
 
-        public string WildCardToRegex(string value)
-        {
-            return "^" + Regex.Escape(value).Replace("\\*", ".*") + "$";
-        }
+        public static string WildCardToRegex(string value)
+            => "^" + Regex.Escape(value).Replace("\\*", ".*") + "$";
     }
 }

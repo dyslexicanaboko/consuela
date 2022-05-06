@@ -11,6 +11,35 @@
 			
 		}
 
+		/// <summary>
+		/// Clone an existing <see cref="FileInfoEntity"/> object.
+		/// </summary>
+		/// <param name="fileInfoEntity">Object to clone.</param>
+		public FileInfoEntity(FileInfoEntity fileInfoEntity)
+		{
+			Name = fileInfoEntity.Name;
+			FullName = fileInfoEntity.FullName;
+			DirectoryName = fileInfoEntity.DirectoryName;
+			CreationTime = fileInfoEntity.CreationTime;
+		}
+
+		/// <summary>
+		/// Converting a full file path into the separate components of this class using the <see cref="Path"/> class's methods for parsing.
+		/// </summary>
+		/// <param name="fullFilePath">Full file path</param>
+		/// <param name="creationTime">When the file was supposedly created</param>
+		public FileInfoEntity(string fullFilePath, DateTime creationTime)
+		{
+			Name = Path.GetFileName(fullFilePath);
+			FullName = fullFilePath;
+			DirectoryName = Path.GetDirectoryName(fullFilePath);
+			CreationTime = creationTime;
+		}
+
+		/// <summary>
+		/// Extracting only what this class requires from an existing <see cref="FileInfo"/> object.
+		/// </summary>
+		/// <param name="fileInfo">Target file info object.</param>
 		public FileInfoEntity(FileInfo fileInfo)
 		{
 			Name = fileInfo.Name;
@@ -81,5 +110,7 @@
 		}
 
 		public static bool operator !=(FileInfoEntity lhs, FileInfoEntity rhs) => !(lhs == rhs);
+
+		public FileInfoEntity Clone() => new FileInfoEntity(this);
 	}
 }

@@ -25,7 +25,7 @@ namespace Consuela.IntegrationTesting
 			p.Delete.Paths.Add(new PathAndPattern(@"J:\Downloads\", "*"));
 			p.Delete.Paths.Add(new PathAndPattern(@"J:\Dump\", "*"));
 
-			p.Ignore.Files.Add(svc.WildCardToRegex(@"temp*.*"));
+			p.Ignore.Files.Add(CleanUpService.WildCardToRegex(@"temp*.*"));
 			p.Ignore.Directories.Add(@"J:\Dump\Don't delete\");
 			p.Ignore.Directories.Add(@"J:\Dump\Scan dump\");
 
