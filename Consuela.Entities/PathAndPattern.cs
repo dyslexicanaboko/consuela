@@ -10,7 +10,7 @@
 
 		public PathAndPattern(string path, string pattern)
 		{
-			Path = System.IO.Path.GetDirectoryName(path);
+			Path = path;
 			Pattern = pattern;
 		}
 

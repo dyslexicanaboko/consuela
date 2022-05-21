@@ -26,7 +26,7 @@ namespace Consuela.UnitTesting.Dummy
                 //Match on the the age and path first
                 .Where(x =>
                     (DateTime.Now - x.CreationTime).TotalDays >= daysOld &&
-                    x.DirectoryName == target.Path)
+                    x.DirectoryName.StartsWith(target.Path)) //To simulate a deep search, matching directory prefix segments
                 //Then match the remainder on the pattern (regex)
                 .Where(x => r.IsMatch(x.Name))
                 .ToList();

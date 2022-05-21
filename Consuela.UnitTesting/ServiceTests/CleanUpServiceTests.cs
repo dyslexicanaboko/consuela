@@ -1,7 +1,9 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
+using Consuela.UnitTesting.Dummy;
 using Moq;
 using NUnit.Framework;
+using System.IO;
 using System.Linq;
 
 namespace Consuela.UnitTesting.ServiceTests
@@ -61,12 +63,13 @@ namespace Consuela.UnitTesting.ServiceTests
         {
             //Arrange
             var profile = GetDefaultProfile();
-            profile.Delete.Paths.Add(new PathAndPattern(SomeDirectory, "*"));
+            profile.Delete.Paths.Add(new PathAndPattern(BaseDirectory, "*"));
 
-            var fileSystem = GetFileSystem(10);
+            var fileSystem = new FileServiceDummy();
 
-            var expected = new CleanUpResults();
-            expected.FilesDeleted.AddRange(fileSystem.FilePaths.Select(x => x.Clone()));
+            AddFiles(fileSystem, BaseDirectory, 10);
+
+            var expected = GetExpectedResults(fileSystem);
 
             var svc = GetCleanUpService(fileSystem);
 
@@ -75,7 +78,7 @@ namespace Consuela.UnitTesting.ServiceTests
 
             //Assert
             AssertAreEqual(expected, actual);
-            Assert.AreEqual(1, fileSystem.Directories.Count);
+            Assert.AreEqual(ExpectedRemainingDirectoryCount, fileSystem.Directories.Count);
         }
 
         [Test]
@@ -83,14 +86,17 @@ namespace Consuela.UnitTesting.ServiceTests
         {
             //Arrange
             var profile = GetDefaultProfile();
-            profile.Delete.Paths.Add(new PathAndPattern(SomeDirectory, "File1*.txt"));
+            profile.Delete.Paths.Add(new PathAndPattern(BaseDirectory, "File1*.txt"));
 
             //First 9 files won't have a preceding 1
             //Last 10 files will have a preceding 1
-            var fileSystem = GetFileSystem(19);
+            var fileSystem = new FileServiceDummy();
 
-            var expected = new CleanUpResults();
-            expected.FilesDeleted.AddRange(fileSystem.FilePaths.TakeLast(10).Select(x => x.Clone()));
+            AddFiles(fileSystem, BaseDirectory, 19);
+
+            var expected = GetExpectedResults(fileSystem);
+            //In this instance overwrite the expected files to be deleted since the wild card is not matching preceding zeros
+            expected.FilesDeleted = fileSystem.FilePaths.TakeLast(10).Select(x => x.Clone()).ToList();
 
             var svc = GetCleanUpService(fileSystem);
 
@@ -99,7 +105,32 @@ namespace Consuela.UnitTesting.ServiceTests
 
             //Assert
             AssertAreEqual(expected, actual);
-            Assert.AreEqual(1, fileSystem.Directories.Count);
+            Assert.AreEqual(ExpectedRemainingDirectoryCount, fileSystem.Directories.Count);
+        }
+
+        [Test]
+        public void Empty_folders_are_deleted()
+        {
+            //Arrange
+            var innerDirectory = Path.Combine(BaseDirectory, "Dir1");
+
+            var profile = GetDefaultProfile();
+            profile.Delete.Paths.Add(new PathAndPattern(BaseDirectory, "File*.txt"));
+
+            var fileSystem = new FileServiceDummy();
+
+            AddFiles(fileSystem, innerDirectory, 5);
+
+            var expected = GetExpectedResults(fileSystem);
+
+            var svc = GetCleanUpService(fileSystem);
+
+            //Act
+            var actual = svc.CleanUp(profile, false);
+
+            //Assert
+            AssertAreEqual(expected, actual);
+            Assert.AreEqual(ExpectedRemainingDirectoryCount, fileSystem.Directories.Count);
         }
     }
 }
