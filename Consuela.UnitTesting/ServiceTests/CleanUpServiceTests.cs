@@ -63,7 +63,7 @@ namespace Consuela.UnitTesting.ServiceTests
         {
             //Arrange
             var profile = GetDefaultProfile();
-            profile.Delete.Paths.Add(new PathAndPattern(BaseDirectory, "*"));
+            profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "*"));
 
             var fileSystem = new FileServiceDummy();
 
@@ -86,7 +86,7 @@ namespace Consuela.UnitTesting.ServiceTests
         {
             //Arrange
             var profile = GetDefaultProfile();
-            profile.Delete.Paths.Add(new PathAndPattern(BaseDirectory, "File1*.txt"));
+            profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "File1*.txt"));
 
             //First 9 files won't have a preceding 1
             //Last 10 files will have a preceding 1
@@ -115,7 +115,7 @@ namespace Consuela.UnitTesting.ServiceTests
             var innerDirectory = Path.Combine(BaseDirectory, "Dir1");
 
             var profile = GetDefaultProfile();
-            profile.Delete.Paths.Add(new PathAndPattern(BaseDirectory, "File*.txt"));
+            profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "File*.txt"));
 
             var fileSystem = new FileServiceDummy();
 

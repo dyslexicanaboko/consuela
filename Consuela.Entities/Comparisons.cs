@@ -4,7 +4,7 @@
 	{
 		//TODO: Make a version that can compare lists that are not distinct
 		//This comparison assumes no duplicates exist
-		internal static bool AreDistinctListsEqual<T>(this List<T> primary, List<T> secondary)
+		internal static bool AreDistinctListsEqual<T>(this IReadOnlyList<T> primary, IReadOnlyList<T> secondary)
 			where T : IEquatable<T>
 		{
 			if(primary == null && secondary == null) return true;
@@ -32,7 +32,7 @@
 		/// <param name="primary"></param>
 		/// <param name="secondary"></param>
 		/// <returns></returns>
-		internal static bool AreDictionariesEqual<TKey, TValue>(this Dictionary<TKey, TValue> primary, Dictionary<TKey, TValue> secondary)
+		internal static bool AreDictionariesEqual<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> primary, IReadOnlyDictionary<TKey, TValue> secondary)
 			where TKey : IEquatable<TKey>
 			where TValue : IEquatable<TValue>
 		{
@@ -64,7 +64,7 @@
 		/// <param name="primary"></param>
 		/// <param name="secondary"></param>
 		/// <returns></returns>
-		internal static bool AreDictionarKeysEqual<TKey, TValue>(this Dictionary<TKey, TValue> primary, Dictionary<TKey, TValue> secondary)
+		internal static bool AreDictionarKeysEqual<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> primary, IReadOnlyDictionary<TKey, TValue> secondary)
 			where TKey : IEquatable<TKey>
 		{
 			if (primary == null && secondary == null) return true;

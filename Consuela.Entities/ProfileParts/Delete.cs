@@ -6,12 +6,20 @@
 		/// <summary>How many days old a file is kept until it is deleted.</summary>
 		public int FileAgeThreshold { get; set; }
 
-		//TODO: need to make sure this is distinct
-		public List<PathAndPattern> Paths { get; set; } = new List<PathAndPattern>();
+		private List<PathAndPattern> _paths { get; set; } = new List<PathAndPattern>();
+
+		public IReadOnlyList<PathAndPattern> Paths => _paths;
 
 		//TODO: Need to figure out what this looks like
 		public Schedule Schedule { get; set; } = new Schedule();
 
+		public void AddPath(PathAndPattern path)
+		{
+			if(_paths.Contains(path)) return;
+
+			_paths.Add(path);
+		}
+		
 		public override bool Equals(object? obj) => Equals(obj as Delete);
 
 		public bool Equals(Delete? p)
@@ -33,7 +41,7 @@
 				return false;
 			}
 
-			var areEqualPaths = Paths.AreDistinctListsEqual(p.Paths);
+			var areEqualPaths = _paths.AreDistinctListsEqual(p.Paths);
 
 			var areEqual =
 				areEqualPaths &&

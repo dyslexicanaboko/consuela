@@ -104,7 +104,7 @@ namespace Consuela.Lib.Services
         }
 
         //Get the folders to delete ultimately that are empty after files have been deleted
-        private List<string> FindEmptyFoldersToDelete(List<FileInfoEntity> files, List<PathAndPattern> searchPaths)
+        private List<string> FindEmptyFoldersToDelete(List<FileInfoEntity> files, IReadOnlyList<PathAndPattern> searchPaths)
         {
             //Unfortunately because of the PathTooLongException I have to jump through hoops to make this work
             List<string> lst =
