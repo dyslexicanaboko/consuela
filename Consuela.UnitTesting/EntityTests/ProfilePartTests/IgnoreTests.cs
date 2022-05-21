@@ -1,5 +1,6 @@
 ﻿using Consuela.Entity.ProfileParts;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
 {
@@ -29,6 +30,40 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
 
             //Act / Assert
             AssertAreNotEqual(left, right);
+        }
+
+        [Test]
+        public void File_list_must_be_distinct()
+        {
+            //Arrange
+            var obj = new Ignore();
+            obj.AddFile("F");
+            obj.AddFile("F");
+
+            //Act
+            //Count how many times this object occurs
+            var actual = obj.Files.Count(x => x == "F");
+
+            //Assert
+            //Expecting the object to show up once
+            Assert.AreEqual(1, actual);
+        }
+
+        [Test]
+        public void Directory_list_must_be_distinct()
+        {
+            //Arrange
+            var obj = new Ignore();
+            obj.AddDirectory("D");
+            obj.AddDirectory("D");
+
+            //Act
+            //Count how many times this object occurs
+            var actual = obj.Directories.Count(x => x == "D");
+
+            //Assert
+            //Expecting the object to show up once
+            Assert.AreEqual(1, actual);
         }
     }
 }
