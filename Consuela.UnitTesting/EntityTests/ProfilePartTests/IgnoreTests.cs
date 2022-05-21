@@ -11,8 +11,8 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
         {
             //Arrange
             var obj = new Ignore();
-            obj.Files.Add("F");
-            obj.Directories.Add("D");
+            obj.AddFile("F");
+            obj.AddDirectory("D");
 
             return obj;
         }
@@ -24,8 +24,8 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             var left = GetFilledObject();
 
             var right = new Ignore();
-            right.Files.Add("F1");
-            right.Directories.Add("D1");
+            right.AddFile("F1");
+            right.AddDirectory("D1");
 
             //Act / Assert
             AssertAreNotEqual(left, right);

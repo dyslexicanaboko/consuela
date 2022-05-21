@@ -3,12 +3,29 @@
 	public class Ignore
 		 : IEquatable<Ignore>
 	{
-		//TODO: Need to prevent duplicates from being added
 		/// <summary>The files to ignore during clean up</summary>
-		public List<string> Files { get; set; } = new List<string>();
+		public List<string> _files { get; set; } = new List<string>();
 
 		/// <summary>The directories to ignore during clean up</summary>
-		public List<string> Directories { get; set; } = new List<string>();
+		public List<string> _directories { get; set; } = new List<string>();
+
+		public IReadOnlyList<string> Files => _files;
+
+		public IReadOnlyList<string> Directories => _directories;
+
+		public void AddFile(string file)
+		{
+			if (_files.Contains(file)) return;
+
+			_files.Add(file);
+		}
+
+		public void AddDirectory(string directory)
+		{
+			if (_directories.Contains(directory)) return;
+
+			_directories.Add(directory);
+		}
 
 		public override bool Equals(object? obj) => Equals(obj as Ignore);
 

@@ -36,7 +36,10 @@ namespace Consuela.Lib.Services
             }
 
             //FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
-            profile.Ignore.Directories.ForEach(d => lstFiles.RemoveAll(x => x.FullName.StartsWith(d)));
+            foreach (var d in profile.Ignore.Directories)
+            {
+                lstFiles.RemoveAll(x => x.FullName.StartsWith(d));
+            }
 
             //Remove all ignored files
             for (int i = lstFiles.Count - 1; i >= 0; i--)
@@ -161,7 +164,7 @@ namespace Consuela.Lib.Services
             return paths;
         }
 
-        private bool SkipFile(string value, IList<string> whiteList)
+        private bool SkipFile(string value, IReadOnlyList<string> whiteList)
         {
             foreach (string r in whiteList)
             {
