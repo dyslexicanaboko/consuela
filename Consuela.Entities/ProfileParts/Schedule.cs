@@ -4,10 +4,13 @@
 	public class Schedule
 		: IEquatable<Schedule>
 	{
-		//TODO: Give this class meaning
-		//I don't know how this class will work yet. Place holder.
-		//Model it after windows task manager for now unless there is a better idea. Could use Hangfire.io.
-		public int TheNumberSeven { get; set; } = 7;
+		/// <summary>
+		/// 05/21/2022 - For now I am only going to support three options which all start on the first of that type.
+		/// Every day
+		/// Every Sunday of the week
+		/// Every first of the month
+		/// </summary>
+		public ScheduleFrequency Frequency { get; set; }
 
 		public override bool Equals(object? obj) => Equals(obj as Schedule);
 
@@ -31,10 +34,10 @@
 			}
 
 			//This is just dummy code for now.
-			return TheNumberSeven == p.TheNumberSeven;
+			return Frequency == p.Frequency;
 		}
 
-		public override int GetHashCode() => (TheNumberSeven).GetHashCode();
+		public override int GetHashCode() => (Frequency).GetHashCode();
 
 		public static bool operator ==(Schedule lhs, Schedule rhs)
 		{

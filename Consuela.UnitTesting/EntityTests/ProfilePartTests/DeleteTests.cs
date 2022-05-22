@@ -17,7 +17,7 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             var obj = new Delete();
             obj.FileAgeThreshold = 0;
             obj.AddPath(SomePathAndPattern);
-            obj.Schedule = new Schedule();
+            obj.Schedule = new Schedule { Frequency = ScheduleFrequency.Monthly };
 
             return obj;
         }
@@ -31,7 +31,7 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             var right = new Delete();
             left.FileAgeThreshold = 1;
             left.AddPath(new PathAndPattern("Path1", "Pattern1"));
-            left.Schedule = new Schedule { TheNumberSeven = 8 };
+            left.Schedule = new Schedule { Frequency = ScheduleFrequency.Daily };
 
             //Act / Assert
             AssertAreNotEqual(left, right);

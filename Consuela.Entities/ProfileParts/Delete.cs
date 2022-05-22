@@ -10,7 +10,6 @@
 
 		public IReadOnlyList<PathAndPattern> Paths => _paths;
 
-		//TODO: Need to figure out what this looks like
 		public Schedule Schedule { get; set; } = new Schedule();
 
 		public void AddPath(PathAndPattern path)
