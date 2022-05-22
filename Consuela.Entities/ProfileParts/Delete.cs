@@ -6,7 +6,7 @@
 		/// <summary>How many days old a file is kept until it is deleted.</summary>
 		public int FileAgeThreshold { get; set; }
 
-		private List<PathAndPattern> _paths { get; set; } = new List<PathAndPattern>();
+		private List<PathAndPattern> _paths = new List<PathAndPattern>();
 
 		public IReadOnlyList<PathAndPattern> Paths => _paths;
 

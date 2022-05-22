@@ -3,14 +3,14 @@
 	public class Ignore
 		 : IEquatable<Ignore>
 	{
+		private List<string> _files = new List<string>();
+
 		/// <summary>The files to ignore during clean up</summary>
-		public List<string> _files { get; set; } = new List<string>();
-
-		/// <summary>The directories to ignore during clean up</summary>
-		public List<string> _directories { get; set; } = new List<string>();
-
 		public IReadOnlyList<string> Files => _files;
 
+		private List<string> _directories = new List<string>();
+
+		/// <summary>The directories to ignore during clean up</summary>
 		public IReadOnlyList<string> Directories => _directories;
 
 		public void AddFile(string file)

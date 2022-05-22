@@ -31,12 +31,21 @@ namespace Consuela.Lib.Services.ProfileManagement
         {
             lock (_fileLock)
             {
+                //If the file doesn't exist, just create it
+                if(!File.Exists(_profileFilePath)) File.Create(_profileFilePath);
+
                 var json = File.ReadAllText(_profileFilePath);
 
                 _profileManager = JsonConvert.DeserializeObject<ProfileManager>(json);
 
+                //If the JSON file does not have JSON in it (empty file) then the JSON convert will return null
+                //Instantiate the object in advance so that it will be saved as new on this run
+                if(_profileManager == null) _profileManager = new ProfileManager();
+
+                //If the profile is null for any reason then initialize it.
                 if (_profileManager.Profile == null) _profileManager.Profile = new ProfileWatcher();
 
+                //Any properties that are not set properly will gain defaults. If any changes are found then the file is saved.
                 SetDefaultsAsNeeded(_profileManager.Profile);
 
                 _profileManager.RegisterSaveDelegate(SaveHandler);
@@ -51,21 +60,50 @@ namespace Consuela.Lib.Services.ProfileManagement
         {
             lock (_fileLock)
             {
-                var json = JsonConvert.SerializeObject(_profileManager, Formatting.Indented);
-
-                File.WriteAllText(_profileFilePath, json);
+                InternalSave();
             }
+        }
+
+        private void InternalSave()
+        {
+            var json = JsonConvert.SerializeObject(_profileManager, Formatting.Indented);
+
+            File.WriteAllText(_profileFilePath, json);
         }
 
         public void SetDefaultsAsNeeded(IProfile profile)
         {
-            if (profile.Delete.Schedule == null) profile.Delete.Schedule = new Schedule();
-            
-            if (profile.Delete.FileAgeThreshold == 0) profile.Delete.FileAgeThreshold = ThirtyDays;
+            var changed = false;
 
-            if (string.IsNullOrWhiteSpace(profile.Logging.Path)) profile.Logging.Path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            if (profile.Delete.Schedule == null)
+            {
+                profile.Delete.Schedule = new Schedule();
 
-            if(profile.Logging.RetentionDays == 0) profile.Logging.RetentionDays = ThirtyDays;
+                changed = true;
+            }
+
+            if (profile.Delete.FileAgeThreshold == 0) 
+            { 
+                profile.Delete.FileAgeThreshold = ThirtyDays;
+                
+                changed = true; 
+            }
+
+            if (string.IsNullOrWhiteSpace(profile.Logging.Path)) 
+            { 
+                profile.Logging.Path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); 
+                
+                changed = true; 
+            }
+
+            if (profile.Logging.RetentionDays == 0) 
+            { 
+                profile.Logging.RetentionDays = ThirtyDays;
+                
+                changed = true;
+            }
+
+            if (changed) InternalSave();
         }
     }
 }

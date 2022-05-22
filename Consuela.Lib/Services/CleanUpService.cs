@@ -10,14 +10,14 @@ namespace Consuela.Lib.Services
     public class CleanUpService 
         : ICleanUpService
     {
-        private readonly ILoggingService _loggingService;
+        private readonly IAuditService _auditService;
         private readonly IFileService _fileService;
 
         public CleanUpService(
-            ILoggingService loggingService,
+            IAuditService auditService,
             IFileService fileService)
         {
-            _loggingService = loggingService;
+            _auditService = auditService;
 
             _fileService = fileService;
         }
@@ -57,14 +57,14 @@ namespace Consuela.Lib.Services
             //Order by creation time
             lstFiles = lstFiles.OrderBy(x => x.CreationTime).ToList();
 
-            _loggingService.Log($"Deleted Files {lstFiles.Count}");
+            _auditService.Log($"Deleted Files {lstFiles.Count}");
 
             //Delete the individual files
             foreach (var f in lstFiles)
             {
                 try
                 {
-                    _loggingService.Log(f);
+                    _auditService.Log(f);
 
                     if (!dryRun) _fileService.DeleteFile(f);
 
@@ -75,20 +75,20 @@ namespace Consuela.Lib.Services
                     results.FileDeleteErrors.Add(f, ex);
 
                     //Oh well
-                    _loggingService.Log(ex);
+                    _auditService.Log(ex);
                 }
             }
 
             var lstFolders = FindEmptyFoldersToDelete(lstFiles, profile.Delete.Paths);
 
-            _loggingService.Log($"Deleted Directories {lstFolders.Count}");
+            _auditService.Log($"Deleted Directories {lstFolders.Count}");
 
             //Lastly delete the folders that are empty, but not the search paths
             foreach (var folder in lstFolders)
             {
                 try
                 {
-                    _loggingService.Log($"Directory,NULL,{folder},NULL");
+                    _auditService.Log($"Directory,NULL,{folder},NULL");
 
                     if (!dryRun) _fileService.DeleteDirectory(folder);
 
@@ -99,9 +99,11 @@ namespace Consuela.Lib.Services
                     results.DirectoryDeleteErrors.Add(folder, ex);
                     
                     //Oh well
-                    _loggingService.Log(ex);
+                    _auditService.Log(ex);
                 }
             }
+
+            _auditService.SaveLog();
 
             return results;
         }
@@ -137,7 +139,7 @@ namespace Consuela.Lib.Services
                 catch (PathTooLongException ptle)
                 {
                     //Just leave these files behind because of this exception
-                    _loggingService.Log(ptle.Message);
+                    _auditService.Log(ptle.Message);
                 }
             }
 
@@ -157,7 +159,7 @@ namespace Consuela.Lib.Services
                 {
                     //TODO: Needs to be logged properly
                     //Just leave these files behind because of this exception
-                    _loggingService.Log(ptle.Message);
+                    _auditService.Log(ptle.Message);
                 }
             }
 

@@ -9,7 +9,8 @@ namespace Consuela.Lib.Services
     /// Over-simplistic scheduling service. Not sophisticated enough to know if a schedule has run or not already.
     /// Avoiding having persistent storage, so this will have to do for now.
     /// </summary>
-    public class SchedulingService : ISchedulingService
+    public class SchedulingService 
+        : ISchedulingService
     {
         private const double OneDay = 86400000;
         private readonly IProfile _profile;

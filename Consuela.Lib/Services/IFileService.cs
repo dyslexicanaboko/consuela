@@ -12,5 +12,7 @@ namespace Consuela.Lib.Services
         void DeleteFile(FileInfoEntity file);
 
         void DeleteDirectory(string path);
+
+        void AppendAllText(string path, string? contents);
     }
 }

@@ -35,5 +35,7 @@ namespace Consuela.Lib.Services
 
             return hasFiles;
         }
+
+        public void AppendAllText(string path, string? contents) => File.AppendAllText(path, contents);
     }
 }

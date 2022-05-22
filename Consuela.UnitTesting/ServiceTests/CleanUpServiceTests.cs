@@ -12,7 +12,7 @@ namespace Consuela.UnitTesting.ServiceTests
     public class CleanUpServiceTests
         : ConsuelaTestBase
     {
-        private readonly Mock<ILoggingService> _mockLoggingService = new Mock<ILoggingService>();
+        private readonly Mock<IAuditService> _mockLoggingService = new Mock<IAuditService>();
         private readonly Mock<IFileService> _mockFileService = new Mock<IFileService>();
         
         public CleanUpServiceTests()

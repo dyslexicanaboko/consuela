@@ -16,11 +16,11 @@ namespace Consuela.IntegrationTesting
 			var profileManager = profileSaver.Load();
 			var p = profileManager.Profile;
 
-			var logging = new LoggingService(p);
+			var fs = new FileService();
 
-			var svc = new CleanUpService(
-				logging,
-				new FileService());
+			var audit = new AuditService(p, fs);
+
+			var svc = new CleanUpService(audit, fs);
 
 			p.Delete.AddPath(new PathAndPattern(@"J:\Downloads\", "*"));
 			p.Delete.AddPath(new PathAndPattern(@"J:\Dump\", "*"));
@@ -31,7 +31,7 @@ namespace Consuela.IntegrationTesting
 
 			svc.CleanUp(p, DryRun);
 
-			logging.SaveLog();
+			audit.SaveLog();
 		}
 	}
 }

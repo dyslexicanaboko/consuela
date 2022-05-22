@@ -14,6 +14,11 @@ namespace Consuela.UnitTesting.Dummy
         
         public List<string> Directories { get; set; } = new List<string>();
 
+        public void AppendAllText(string path, string contents)
+        {
+            //Don't do anything
+        }
+
         public void DeleteDirectory(string path) => Directories.Remove(path);
 
         public void DeleteFile(FileInfoEntity file) => FilePaths.Remove(file);

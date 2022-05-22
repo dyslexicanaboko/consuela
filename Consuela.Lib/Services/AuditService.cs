@@ -5,14 +5,18 @@ using System.IO;
 
 namespace Consuela.Lib.Services
 {
-    public class LoggingService : ILoggingService
+    public class AuditService 
+        : IAuditService
     {
         private readonly IProfile _profile;
+        private readonly IFileService _fileService;
         private readonly List<string> _logs;
 
-        public LoggingService(IProfile profile)
+        public AuditService(IProfile profile, IFileService fileService)
         {
             _profile = profile;
+            
+            _fileService = fileService;
 
             _logs = new List<string>();
         }
@@ -47,7 +51,7 @@ namespace Consuela.Lib.Services
         {
             var path = Path.Combine(_profile.Logging.Path, "Delete operations.log");
 
-            File.AppendAllText(path, ToString());
+            _fileService.AppendAllText(path, ToString());
         }
     }
 }

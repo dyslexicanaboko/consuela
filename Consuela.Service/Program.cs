@@ -61,9 +61,9 @@ namespace Consuela.Service
 
                         return profileManager.Profile;
                     });
-                    
-                    services.AddSingleton<ILoggingService, LoggingService>();
+
                     services.AddSingleton<IFileService, FileService>();
+                    services.AddSingleton<IAuditService, AuditService>();
                     services.AddSingleton<ICleanUpService, CleanUpService>();
                     services.AddSingleton<ISchedulingService, SchedulingService>();
 

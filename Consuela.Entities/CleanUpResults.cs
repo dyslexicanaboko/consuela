@@ -13,6 +13,18 @@
 		
 		public Dictionary<string, Exception> DirectoryDeleteErrors { get; set; } = new Dictionary<string, Exception>();
 
+		public override string ToString()
+		{
+			var summary = 
+				$"Files ignored      : {FilesIgnored.Count}{Environment.NewLine}" +
+				$"Files deleted      : {FilesDeleted.Count}{Environment.NewLine}" +
+				$"File delete errors : {FileDeleteErrors.Count}{Environment.NewLine}" +
+				$"Directories deleted     : {DirectoriesDeleted.Count}{Environment.NewLine}" +
+				$"Directory delete errors : {DirectoryDeleteErrors.Count}{Environment.NewLine}";
+
+			return summary;
+		}
+
 		public override bool Equals(object? obj) => Equals(obj as CleanUpResults);
 
 		public bool Equals(CleanUpResults? p)
