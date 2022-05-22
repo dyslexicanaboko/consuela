@@ -34,9 +34,12 @@ namespace Consuela.Lib.Services.ProfileManagement
                 var json = File.ReadAllText(_profileFilePath);
 
                 _profileManager = JsonConvert.DeserializeObject<ProfileManager>(json);
-                _profileManager.RegisterSaveDelegate(SaveHandler);
+
+                if (_profileManager.Profile == null) _profileManager.Profile = new ProfileWatcher();
 
                 SetDefaultsAsNeeded(_profileManager.Profile);
+
+                _profileManager.RegisterSaveDelegate(SaveHandler);
 
                 return _profileManager;
             }

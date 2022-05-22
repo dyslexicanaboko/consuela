@@ -10,7 +10,7 @@
 		/// Every Sunday of the week
 		/// Every first of the month
 		/// </summary>
-		public ScheduleFrequency Frequency { get; set; }
+		public ScheduleFrequency Frequency { get; set; } = ScheduleFrequency.Monthly;
 
 		public override bool Equals(object? obj) => Equals(obj as Schedule);
 

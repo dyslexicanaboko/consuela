@@ -22,12 +22,12 @@ namespace Consuela.IntegrationTesting
 				logging,
 				new FileService());
 
-			p.Delete.Paths.Add(new PathAndPattern(@"J:\Downloads\", "*"));
-			p.Delete.Paths.Add(new PathAndPattern(@"J:\Dump\", "*"));
+			p.Delete.AddPath(new PathAndPattern(@"J:\Downloads\", "*"));
+			p.Delete.AddPath(new PathAndPattern(@"J:\Dump\", "*"));
 
-			p.Ignore.Files.Add(CleanUpService.WildCardToRegex(@"temp*.*"));
-			p.Ignore.Directories.Add(@"J:\Dump\Don't delete\");
-			p.Ignore.Directories.Add(@"J:\Dump\Scan dump\");
+			p.Ignore.AddFile(CleanUpService.WildCardToRegex(@"temp*.*"));
+			p.Ignore.AddDirectory(@"J:\Dump\Don't delete\");
+			p.Ignore.AddDirectory(@"J:\Dump\Scan dump\");
 
 			svc.CleanUp(p, DryRun);
 

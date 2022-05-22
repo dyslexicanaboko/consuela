@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.Lib", "Consuela.Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.IntegrationTesting", "Consuela.IntegrationTesting\Consuela.IntegrationTesting.csproj", "{765FB54D-4007-43B7-A4BF-526CBDA51157}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consuela.Entity", "Consuela.Entities\Consuela.Entity.csproj", "{73507EE9-E54B-4C5C-8182-249B114D8DE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.Entity", "Consuela.Entities\Consuela.Entity.csproj", "{73507EE9-E54B-4C5C-8182-249B114D8DE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.UnitTesting", "Consuela.UnitTesting\Consuela.UnitTesting.csproj", "{133E6803-CD5D-4269-B862-5D013E7D1010}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{97224D63-4847-4B74-97A9-06642E44CD61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consuela.Service", "Consuela.Service\Consuela.Service.csproj", "{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{133E6803-CD5D-4269-B862-5D013E7D1010}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{133E6803-CD5D-4269-B862-5D013E7D1010}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{133E6803-CD5D-4269-B862-5D013E7D1010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
