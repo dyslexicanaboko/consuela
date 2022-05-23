@@ -23,6 +23,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 		/// <inheritdoc/>
 		public Delete Delete { get; set; } = new Delete();
 
+		//TODO: Somehow, when this object is modified it needs to be saved by raising this event
 		private void RaiseSaveEvent() => Save?.Invoke(this, new EventArgs());
 
 		public override bool Equals(object? obj) => Equals(obj as ProfileWatcher);

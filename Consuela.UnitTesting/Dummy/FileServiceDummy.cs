@@ -14,14 +14,13 @@ namespace Consuela.UnitTesting.Dummy
         
         public List<string> Directories { get; set; } = new List<string>();
 
-        public void AppendAllText(string path, string contents)
-        {
-            //Don't do anything
-        }
+        public void CreateDirectory(string path) { /* Do nothing */ }
 
-        public void DeleteDirectory(string path) => Directories.Remove(path);
+        public void AppendAllText(string path, string contents) { /* Do nothing */ }
 
-        public void DeleteFile(FileInfoEntity file) => FilePaths.Remove(file);
+        public void DeleteDirectoryIfExists(string path) => Directories.Remove(path);
+
+        public void DeleteFileIfExists(FileInfoEntity file) => FilePaths.Remove(file);
 
         public List<FileInfoEntity> GetFiles(PathAndPattern target, int daysOld)
         {

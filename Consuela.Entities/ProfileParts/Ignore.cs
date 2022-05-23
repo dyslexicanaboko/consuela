@@ -5,7 +5,7 @@
 	{
 		private List<string> _files = new List<string>();
 
-		/// <summary>The files to ignore during clean up</summary>
+		/// <summary>Exact file names or file patterns to ignore during clean up.</summary>
 		public IReadOnlyList<string> Files => _files;
 
 		private List<string> _directories = new List<string>();
@@ -13,6 +13,10 @@
 		/// <summary>The directories to ignore during clean up</summary>
 		public IReadOnlyList<string> Directories => _directories;
 
+		/// <summary>
+		/// Add an exact file name or pattern to ignore. Do not include a path.
+		/// </summary>
+		/// <param name="file">exact file name or pattern</param>
 		public void AddFile(string file)
 		{
 			if (_files.Contains(file)) return;
@@ -20,6 +24,10 @@
 			_files.Add(file);
 		}
 
+		/// <summary>
+		/// The absolute path to ignore. This protects the directory named and its contents.
+		/// </summary>
+		/// <param name="directory">The exact path to ignore for deletion.</param>
 		public void AddDirectory(string directory)
 		{
 			if (_directories.Contains(directory)) return;

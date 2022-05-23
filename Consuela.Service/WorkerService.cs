@@ -38,15 +38,21 @@ namespace Consuela.Service
 
             try
             {
-                //This should happen forever
-                _schedulingService.ScheduleAction(() => 
+                //This process should happen endlessly until manually stopped
+                while (true)
                 {
-                    //Undecided as to whether or not to use the returned clean up results for something more
-                    var results = _cleanUpService.CleanUp(_profile, false);
+                    _schedulingService.ScheduleAction(() =>
+                    {
+                        //Undecided as to whether or not to use the returned clean up results for something more
+                        var results = _cleanUpService.CleanUp(_profile, false);
 
-                    //For now putting summary of results on the screen
-                    _logger.LogInformation(results.ToString());
-                });
+                        //For now putting summary of results on the screen
+                        _logger.LogInformation($"Clean up summary:{Environment.NewLine}{results}");
+                    });
+
+                    //Just so the loop doesn't cause a run away train scenario, wait between runs
+                    await Task.Delay(5000);
+                }
             }
             catch (Exception ex)
             {

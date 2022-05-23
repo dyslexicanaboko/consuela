@@ -9,9 +9,11 @@ namespace Consuela.Lib.Services
         
         bool PathContainsFiles(string path);
 
-        void DeleteFile(FileInfoEntity file);
+        void DeleteFileIfExists(FileInfoEntity file);
 
-        void DeleteDirectory(string path);
+        void DeleteDirectoryIfExists(string path);
+
+        void CreateDirectory(string path);
 
         void AppendAllText(string path, string? contents);
     }

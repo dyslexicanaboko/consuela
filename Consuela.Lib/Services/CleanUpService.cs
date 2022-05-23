@@ -66,7 +66,7 @@ namespace Consuela.Lib.Services
                 {
                     _auditService.Log(f);
 
-                    if (!dryRun) _fileService.DeleteFile(f);
+                    if (!dryRun) _fileService.DeleteFileIfExists(f);
 
                     results.FilesDeleted.Add(f);
                 }
@@ -90,7 +90,7 @@ namespace Consuela.Lib.Services
                 {
                     _auditService.Log($"Directory,NULL,{folder},NULL");
 
-                    if (!dryRun) _fileService.DeleteDirectory(folder);
+                    if (!dryRun) _fileService.DeleteDirectoryIfExists(folder);
 
                     results.DirectoriesDeleted.Add(folder);
                 }
@@ -129,7 +129,7 @@ namespace Consuela.Lib.Services
 
                     var path = Path.GetDirectoryName(filePath);
 
-                    //Remove all white listed paths
+                    //Remove all ignored paths from the ignore list
                     if (searchPaths.Any(p => p.Path == path)) continue;
 
                     //Make the list distinct manually
@@ -166,11 +166,15 @@ namespace Consuela.Lib.Services
             return paths;
         }
 
-        private bool SkipFile(string value, IReadOnlyList<string> whiteList)
+        private bool SkipFile(string value, IReadOnlyList<string> ignoreList)
         {
-            foreach (string r in whiteList)
+            foreach (string file in ignoreList)
             {
-                if (Regex.IsMatch(value, r, RegexOptions.IgnoreCase))
+                //If the ignore list item contains a wild card then convert it to proper regex
+                var search = file.Contains("*") ? WildCardToRegex(file) : file;
+
+                //This will search both regex and non-regex just fine from my experience so far
+                if (Regex.IsMatch(value, search, RegexOptions.IgnoreCase))
                     return true;
             }
 

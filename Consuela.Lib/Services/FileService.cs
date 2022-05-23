@@ -12,9 +12,15 @@ namespace Consuela.Lib.Services
     public class FileService 
         : IFileService
     {
-        public void DeleteDirectory(string path) => Directory.Delete(path, true);
-        
-        public void DeleteFile(FileInfoEntity file) => File.Delete(file.FullName);
+        public void DeleteDirectoryIfExists(string path)
+        {
+            if(Directory.Exists(path)) Directory.Delete(path, true);
+        }
+
+        public void DeleteFileIfExists(FileInfoEntity file)
+        {
+            if(File.Exists(file.FullName)) File.Delete(file.FullName);
+        }
 
         public List<FileInfoEntity> GetFiles(PathAndPattern target, int daysOld)
         {
@@ -35,6 +41,8 @@ namespace Consuela.Lib.Services
 
             return hasFiles;
         }
+
+        public void CreateDirectory(string path) => Directory.CreateDirectory(path);
 
         public void AppendAllText(string path, string? contents) => File.AppendAllText(path, contents);
     }

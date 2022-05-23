@@ -3,10 +3,10 @@
     public enum ScheduleFrequency 
     {
         /// <summary>Every day</summary>
-        Daily,
+        Daily = 1,
         /// <summary>Every Sunday of the week</summary>
-        Weekly,
+        Weekly = 2,
         /// <summary>Every first of the month</summary>
-        Monthly
+        Monthly = 3
     }
 }

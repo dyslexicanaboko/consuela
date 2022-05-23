@@ -29,8 +29,8 @@ namespace Consuela.UnitTesting.ServiceTests
             _mockLoggingService.Setup(m => m.Log(It.IsAny<string>()));
 
             //These are the default setups
-            _mockFileService.Setup(x => x.DeleteFile(It.IsAny<FileInfoEntity>()));
-            _mockFileService.Setup(x => x.DeleteDirectory(It.IsAny<string>()));
+            _mockFileService.Setup(x => x.DeleteFileIfExists(It.IsAny<FileInfoEntity>()));
+            _mockFileService.Setup(x => x.DeleteDirectoryIfExists(It.IsAny<string>()));
             _mockFileService.Setup(x => x.GetFiles(It.IsAny<PathAndPattern>(), It.IsAny<int>()));
             _mockFileService.Setup(x => x.PathContainsFiles(It.IsAny<string>())).Returns(true);
 

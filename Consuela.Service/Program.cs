@@ -65,7 +65,12 @@ namespace Consuela.Service
                     services.AddSingleton<IFileService, FileService>();
                     services.AddSingleton<IAuditService, AuditService>();
                     services.AddSingleton<ICleanUpService, CleanUpService>();
-                    services.AddSingleton<ISchedulingService, SchedulingService>();
+                    
+                    //To run immediately for testing
+                    services.AddSingleton<ISchedulingService, SchedulingServiceDummy>();
+                    
+                    //To run with proper scheduled timing
+                    //services.AddSingleton<ISchedulingService, SchedulingService>();
 
                     services.AddHostedService<WorkerService>();
                 }).UseSerilog((hostContext, loggerConfiguration) =>

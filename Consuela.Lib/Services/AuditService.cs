@@ -49,9 +49,18 @@ namespace Consuela.Lib.Services
 
         public void SaveLog()
         {
-            var path = Path.Combine(_profile.Logging.Path, "Delete operations.log");
+            var d = DateTime.Now;
 
+            //Automatically a rolling audit file because it's time based
+            var path = Path.Combine(_profile.Logging.Path, $"{d:yyyy.MM.dd} Delete operations audit.log");
+
+            //Just in case the path doesn't exist, attempt to create it
+            _fileService.CreateDirectory(_profile.Logging.Path);
+
+            //If the file doesn't exist, it will be created
             _fileService.AppendAllText(path, ToString());
+
+            //TODO: Automatic clean up of rolling audit files
         }
     }
 }
