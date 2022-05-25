@@ -1,7 +1,7 @@
 ﻿using Consuela.Entity;
 using System;
 
-namespace Consuela.Lib.Services
+namespace Consuela.Lib.Services.Dummy
 {
     /// <summary>
     /// Over-simplistic scheduling service. Not sophisticated enough to know if a schedule has run or not already.

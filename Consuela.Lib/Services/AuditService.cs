@@ -10,13 +10,19 @@ namespace Consuela.Lib.Services
     {
         private readonly IProfile _profile;
         private readonly IFileService _fileService;
+        private readonly IDateTimeService _dateTimeService;
         private readonly List<string> _logs;
 
-        public AuditService(IProfile profile, IFileService fileService)
+        public AuditService(
+            IProfile profile, 
+            IFileService fileService,
+            IDateTimeService dateTimeService)
         {
             _profile = profile;
             
             _fileService = fileService;
+            
+            _dateTimeService = dateTimeService;
 
             _logs = new List<string>();
         }
@@ -38,7 +44,7 @@ namespace Consuela.Lib.Services
         {
             var n = Environment.NewLine;
 
-            var header = $"{DateTime.Now:yyyy.MM.dd HH:mm:ss}{n}===================================================={n}";
+            var header = $"{_dateTimeService.Now:yyyy.MM.dd HH:mm:ss}{n}===================================================={n}";
 
             var body = string.Join(n, _logs);
 
@@ -49,7 +55,7 @@ namespace Consuela.Lib.Services
 
         public void SaveLog()
         {
-            var d = DateTime.Now;
+            var d = _dateTimeService.Now;
 
             //Automatically a rolling audit file because it's time based
             var path = Path.Combine(_profile.Logging.Path, $"{d:yyyy.MM.dd} Delete operations audit.log");

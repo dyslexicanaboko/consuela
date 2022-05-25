@@ -1,11 +1,10 @@
 ﻿using Consuela.Entity;
-using Consuela.Lib.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Consuela.UnitTesting.Dummy
+namespace Consuela.Lib.Services.Dummy
 {
     public class FileServiceDummy
         : IFileService

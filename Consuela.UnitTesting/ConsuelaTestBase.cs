@@ -1,6 +1,7 @@
 ﻿using Consuela.Entity;
+using Consuela.Lib.Services;
+using Consuela.Lib.Services.Dummy;
 using Consuela.Lib.Services.ProfileManagement;
-using Consuela.UnitTesting.Dummy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,9 +36,11 @@ namespace Consuela.UnitTesting
 
 		protected IProfile GetDefaultProfile() => LoadDefaultProfileManager().Profile;
 
-		protected FileServiceDummy AddFiles(FileServiceDummy fileSystem, string path, int files)
+		protected List<FileInfoEntity> AddFiles(FileServiceDummy fileSystem, string path, int files, string pattern = "File{0}.txt")
 		{
 			if(fileSystem == null) throw new ArgumentNullException(nameof(fileSystem));
+
+			var added = new List<FileInfoEntity>(files);
 
 			var f = fileSystem;
 
@@ -49,19 +52,23 @@ namespace Consuela.UnitTesting
 			//Using cardinal numbers
 			for (var i = 1; i <= files; i++)
 			{
-				var file = Path.Combine(p, $"File{i:00}.txt");
+				var file = Path.Combine(p, string.Format(pattern, $"{i:00}"));
 
-				f.FilePaths.Add(new FileInfoEntity(file, ThirtyOneDaysAgo));
+				var fie = new FileInfoEntity(file, ThirtyOneDaysAgo);
+
+				added.Add(fie);
+
+				f.FilePaths.Add(fie);
 			}
 
-			return f;
+			return added;
 		}
 
-		protected FileServiceDummy AddDirectory(FileServiceDummy fileSystem, string path)
+		protected void AddDirectory(FileServiceDummy fileSystem, string path)
 		{
 			if (fileSystem == null) throw new ArgumentNullException(nameof(fileSystem));
 
-			if (path == null) return fileSystem;
+			if (path == null) return;
 
 			//Break down the path into parts
 			var pathParts = path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
@@ -85,21 +92,27 @@ namespace Consuela.UnitTesting
 				//If this path segment does not exist then add
 				fileSystem.Directories.Add(pathSegment);
 			}
-
-			return fileSystem;
 		}
 
-		protected CleanUpResults GetExpectedResults(FileServiceDummy fileSystem)
+		/// <summary>
+		/// This can be used when nothing is being ignored. This won't help if things are supposed to be ignored.
+		/// </summary>
+		/// <param name="fileSystem">Existing file system to mimic</param>
+		/// <returns></returns>
+		protected CleanUpResults GetSimpleExpectedResults(FileServiceDummy fileSystem)
 		{
 			var expected = new CleanUpResults();
 			
 			expected.FilesDeleted.AddRange(fileSystem.FilePaths.Select(x => x.Clone()));
 			
 			//Don't include the base drive or the base folder in the expected results as those should never be deleted
-			expected.DirectoriesDeleted.AddRange(fileSystem.Directories.Where(x => x != BaseDrive && x != BaseDirectory));
+			expected.DirectoriesDeleted.AddRange(DirectoriesWithoutBase(fileSystem));
 
 			return expected;
 		}
+
+		protected IEnumerable<string> DirectoriesWithoutBase(FileServiceDummy fileSystem) 
+			=> fileSystem.Directories.Where(x => x != BaseDrive && x != BaseDirectory);
 
 		protected List<FileInfoEntity> PathToFileInfoEntity(List<string> paths)
 		{

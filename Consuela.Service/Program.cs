@@ -45,8 +45,10 @@ namespace Consuela.Service
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddSingleton<IProfileSaver, ProfileSaver>();
+                    services.AddScoped<IDateTimeService, DateTimeService>();
                     
+                    services.AddSingleton<IProfileSaver, ProfileSaver>();
+
                     services.AddSingleton<IProfileManager, ProfileManager>((serviceProvider) =>
                     {
                         var profileSaver = serviceProvider.GetService<IProfileSaver>();
@@ -67,10 +69,10 @@ namespace Consuela.Service
                     services.AddSingleton<ICleanUpService, CleanUpService>();
                     
                     //To run immediately for testing
-                    services.AddSingleton<ISchedulingService, SchedulingServiceDummy>();
+                    //services.AddSingleton<ISchedulingService, SchedulingServiceDummy>();
                     
                     //To run with proper scheduled timing
-                    //services.AddSingleton<ISchedulingService, SchedulingService>();
+                    services.AddSingleton<ISchedulingService, SchedulingService>();
 
                     services.AddHostedService<WorkerService>();
                 }).UseSerilog((hostContext, loggerConfiguration) =>

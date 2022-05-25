@@ -1,5 +1,4 @@
 ﻿using Consuela.Entity;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,6 +11,13 @@ namespace Consuela.Lib.Services
     public class FileService 
         : IFileService
     {
+        private readonly IDateTimeService _dateTimeService;
+        
+        public FileService(IDateTimeService dateTimeService)
+        {
+            _dateTimeService = dateTimeService;
+        }
+
         public void DeleteDirectoryIfExists(string path)
         {
             if(Directory.Exists(path)) Directory.Delete(path, true);
@@ -26,7 +32,7 @@ namespace Consuela.Lib.Services
         {
             var files = new DirectoryInfo(target.Path)
                 .GetFiles(target.Pattern, SearchOption.AllDirectories)
-                .Where(x => (DateTime.Now - x.CreationTime).Days > daysOld)
+                .Where(x => (_dateTimeService.Now - x.CreationTime).Days > daysOld)
                 .Select(x => new FileInfoEntity(x))
                 .ToList();
 

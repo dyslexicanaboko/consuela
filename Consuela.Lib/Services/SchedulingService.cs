@@ -14,13 +14,16 @@ namespace Consuela.Lib.Services
     {
         private const double OneDay = 86400000;
         private readonly IProfile _profile;
+        private readonly IDateTimeService _dateTimeService;
         private readonly Timer _timer;
         private Action _method;
         private DateTime _endDate;
 
-        public SchedulingService(IProfile profile)
+        public SchedulingService(IProfile profile, IDateTimeService dateTimeService)
         {
             _profile = profile;
+
+            _dateTimeService = dateTimeService;
 
             _timer = new Timer();
         }
@@ -41,7 +44,7 @@ namespace Consuela.Lib.Services
 
         private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (DateTime.Now.Date != _endDate.Date) return;
+            if (_dateTimeService.Now.Date != _endDate.Date) return;
 
             _method();
             
@@ -50,7 +53,7 @@ namespace Consuela.Lib.Services
 
         private DateTime GetEndDate(Schedule schedule)
         {
-            var dtmNow = DateTime.Now.Date;
+            var dtmNow = _dateTimeService.Now.Date;
 
             switch (schedule.Frequency)
             {

@@ -1,8 +1,9 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
-using Consuela.UnitTesting.Dummy;
+using Consuela.Lib.Services.Dummy;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -69,7 +70,7 @@ namespace Consuela.UnitTesting.ServiceTests
 
             AddFiles(fileSystem, BaseDirectory, 10);
 
-            var expected = GetExpectedResults(fileSystem);
+            var expected = GetSimpleExpectedResults(fileSystem);
 
             var svc = GetCleanUpService(fileSystem);
 
@@ -94,7 +95,7 @@ namespace Consuela.UnitTesting.ServiceTests
 
             AddFiles(fileSystem, BaseDirectory, 19);
 
-            var expected = GetExpectedResults(fileSystem);
+            var expected = GetSimpleExpectedResults(fileSystem);
             //In this instance overwrite the expected files to be deleted since the wild card is not matching preceding zeros
             expected.FilesDeleted = fileSystem.FilePaths.TakeLast(10).Select(x => x.Clone()).ToList();
 
@@ -121,7 +122,7 @@ namespace Consuela.UnitTesting.ServiceTests
 
             AddFiles(fileSystem, innerDirectory, 5);
 
-            var expected = GetExpectedResults(fileSystem);
+            var expected = GetSimpleExpectedResults(fileSystem);
 
             var svc = GetCleanUpService(fileSystem);
 
@@ -131,6 +132,41 @@ namespace Consuela.UnitTesting.ServiceTests
             //Assert
             AssertAreEqual(expected, actual);
             Assert.AreEqual(ExpectedRemainingDirectoryCount, fileSystem.Directories.Count);
+        }
+
+        [Test]
+        public void Ideal_test() //I don't have a good name for this right now
+        {
+            //Arrange
+            var ignoreDirectory = Path.Combine(BaseDirectory, "EntitySpacesCodeGen");
+
+            var profile = GetDefaultProfile();
+            profile.Ignore.AddFile("temp*");
+            profile.Ignore.AddDirectory(ignoreDirectory);
+            profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "*"));
+
+            var fileSystem = new FileServiceDummy();
+
+            var fDeleted = AddFiles(fileSystem, BaseDirectory, 5);
+
+            var fIgnored = AddFiles(fileSystem, BaseDirectory, 5, "temp{0}.tmp");
+            
+            AddFiles(fileSystem, ignoreDirectory, 5);
+
+            var expected = new CleanUpResults
+            {
+                FilesDeleted = fDeleted,
+                FilesIgnored = fIgnored
+            };
+
+            var svc = GetCleanUpService(fileSystem);
+
+            //Act
+            var actual = svc.CleanUp(profile, false);
+
+            //Assert
+            AssertAreEqual(expected, actual);
+            Assert.AreEqual(1, DirectoriesWithoutBase(fileSystem).Count());
         }
     }
 }

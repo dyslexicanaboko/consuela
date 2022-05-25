@@ -16,9 +16,11 @@ namespace Consuela.IntegrationTesting
 			var profileManager = profileSaver.Load();
 			var p = profileManager.Profile;
 
-			var fs = new FileService();
+			var dtm = new DateTimeService();
 
-			var audit = new AuditService(p, fs);
+			var fs = new FileService(dtm);
+
+			var audit = new AuditService(p, fs, dtm);
 
 			var svc = new CleanUpService(audit, fs);
 
