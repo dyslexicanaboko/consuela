@@ -22,7 +22,6 @@ namespace Consuela.Lib.Services
             _fileService = fileService;
         }
 
-        //Might want to consider returning statistics of some kind
         public CleanUpResults CleanUp(IProfile profile, bool dryRun)
         {
             var results = new CleanUpResults();
@@ -127,6 +126,7 @@ namespace Consuela.Lib.Services
                 {
                     var filePath = lst[i];
 
+                    //This call can thrown an exception, so it has to be done one at a time
                     var path = Path.GetDirectoryName(filePath);
 
                     //Remove all ignored paths from the ignore list
@@ -161,6 +161,14 @@ namespace Consuela.Lib.Services
                     //Just leave these files behind because of this exception
                     _auditService.Log(ptle.Message);
                 }
+            }
+
+            //Add all stand alone empty folders that were empty to begin with
+            foreach (var search in searchPaths)
+            {
+                //Since files are the main driver, folders that were empty to begin with will never be deleted unless
+                //they are specifically looked for to be deleted
+                paths.AddRange(_fileService.GetEmptyDirectories(search));
             }
 
             return paths;

@@ -10,6 +10,7 @@ namespace Consuela.IntegrationTesting
 	{
 		const bool DryRun = true;
 
+		[Test]
 		public void Original_LinqPad_main_method()
 		{
 			var profileSaver = new ProfileSaver();

@@ -6,7 +6,9 @@ namespace Consuela.Lib.Services
     public interface IFileService
     {
         List<FileInfoEntity> GetFiles(PathAndPattern target, int daysOld);
-        
+
+        List<string> GetEmptyDirectories(PathAndPattern target);
+
         bool PathContainsFiles(string path);
 
         void DeleteFileIfExists(FileInfoEntity file);

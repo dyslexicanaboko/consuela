@@ -12,16 +12,23 @@ namespace Consuela.UnitTesting
 	public class ConsuelaTestBase
 		: TestBase
 	{
+		protected virtual string BaseDrive { get; set; } = "D:";
+		//Leave off trailing backslash for comparison purposes
+		protected virtual string BaseDirectory { get; set; } = @"D:\Dump";
+
 		protected const int ExpectedRemainingDirectoryCount = 2;
-		protected const string BaseDrive = "D:";
-		protected const string BaseDirectory = @"D:\Dump"; //Leave off trailing backslash for comparison purposes
-		protected readonly DateTime ThirtyOneDaysAgo;
+		protected readonly DateTime ThirtyFiveDaysAhead;
+		protected readonly DateTime ThirtyFiveDaysBehind;
 
 		protected ConsuelaTestBase()
 			: base()
 		{
-			ThirtyOneDaysAgo = DateTime.Today.AddDays(-31);
+			ThirtyFiveDaysAhead = DateTime.Today.AddDays(35);
+
+			ThirtyFiveDaysBehind = DateTime.Today.AddDays(-35);
 		}
+		
+		protected FileServiceDummy FileService() => new FileServiceDummy(new DateTimeService());
 
 		protected ProfileManager LoadDefaultProfileManager()
 		{
@@ -54,7 +61,7 @@ namespace Consuela.UnitTesting
 			{
 				var file = Path.Combine(p, string.Format(pattern, $"{i:00}"));
 
-				var fie = new FileInfoEntity(file, ThirtyOneDaysAgo);
+				var fie = new FileInfoEntity(file, ThirtyFiveDaysBehind);
 
 				added.Add(fie);
 
@@ -116,7 +123,7 @@ namespace Consuela.UnitTesting
 
 		protected List<FileInfoEntity> PathToFileInfoEntity(List<string> paths)
 		{
-			var lst = paths.Select(x => new FileInfoEntity(x, ThirtyOneDaysAgo)).ToList();
+			var lst = paths.Select(x => new FileInfoEntity(x, ThirtyFiveDaysBehind)).ToList();
 
 			return lst;
 		}

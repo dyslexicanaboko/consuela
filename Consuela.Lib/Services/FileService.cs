@@ -39,6 +39,17 @@ namespace Consuela.Lib.Services
             return files;
         }
 
+        public List<string> GetEmptyDirectories(PathAndPattern target)
+        {
+            var files = new DirectoryInfo(target.Path) //Root
+                .GetDirectories("*", SearchOption.AllDirectories) //All folders
+                .Where(x => !x.EnumerateFiles().Any()) //That are empty
+                .Select(x => x.FullName) //Folder names only
+                .ToList();
+
+            return files;
+        }
+
         public bool PathContainsFiles(string path)
         {
             var di = new DirectoryInfo(path);

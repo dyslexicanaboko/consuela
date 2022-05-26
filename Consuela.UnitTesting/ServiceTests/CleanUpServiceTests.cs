@@ -3,7 +3,6 @@ using Consuela.Lib.Services;
 using Consuela.Lib.Services.Dummy;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -66,7 +65,7 @@ namespace Consuela.UnitTesting.ServiceTests
             var profile = GetDefaultProfile();
             profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "*"));
 
-            var fileSystem = new FileServiceDummy();
+            var fileSystem = FileService();
 
             AddFiles(fileSystem, BaseDirectory, 10);
 
@@ -91,7 +90,7 @@ namespace Consuela.UnitTesting.ServiceTests
 
             //First 9 files won't have a preceding 1
             //Last 10 files will have a preceding 1
-            var fileSystem = new FileServiceDummy();
+            var fileSystem = FileService();
 
             AddFiles(fileSystem, BaseDirectory, 19);
 
@@ -118,7 +117,7 @@ namespace Consuela.UnitTesting.ServiceTests
             var profile = GetDefaultProfile();
             profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "File*.txt"));
 
-            var fileSystem = new FileServiceDummy();
+            var fileSystem = FileService();
 
             AddFiles(fileSystem, innerDirectory, 5);
 
@@ -145,7 +144,7 @@ namespace Consuela.UnitTesting.ServiceTests
             profile.Ignore.AddDirectory(ignoreDirectory);
             profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "*"));
 
-            var fileSystem = new FileServiceDummy();
+            var fileSystem = FileService();
 
             var fDeleted = AddFiles(fileSystem, BaseDirectory, 5);
 
