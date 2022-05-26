@@ -1,7 +1,7 @@
-﻿using Consuela.Lib;
+﻿using Consuela.Entity;
 using Consuela.Lib.Services;
+using Consuela.Lib.Services.ProfileManagement;
 using NUnit.Framework;
-using System.IO;
 
 namespace Consuela.IntegrationTesting
 {
@@ -9,36 +9,32 @@ namespace Consuela.IntegrationTesting
 	public class OriginalMainTest
 	{
 		const bool DryRun = true;
-		private string BasePath = Path.GetDirectoryName(Util_CurrentQueryPath());
 
+		[Test]
 		public void Original_LinqPad_main_method()
 		{
-			var svc = new CleanUpService();
+			var profileSaver = new ProfileSaver();
+			var profileManager = profileSaver.Load();
+			var p = profileManager.Profile;
 
-			var p = new Profile();
+			var dtm = new DateTimeService();
 
-			p.SearchPaths.Add(new PathAndPattern(@"J:\Downloads\", "*"));
-			p.SearchPaths.Add(new PathAndPattern(@"J:\Dump\", "*"));
+			var fs = new FileService(dtm);
 
-			p.WhiteListFiles.Add(svc.WildCardToRegex(@"temp*.*"));
-			p.WhiteListDirectories.Add(@"J:\Dump\Don't delete\");
-			p.WhiteListDirectories.Add(@"J:\Dump\Scan dump\");
+			var audit = new AuditService(p, fs, dtm);
 
-			var operations = svc.CleanUp(p, DryRun);
+			var svc = new CleanUpService(audit, fs);
 
-			var path = Path.Combine(BasePath, "Delete operations.log");
+			p.Delete.AddPath(new PathAndPattern(@"J:\Downloads\", "*"));
+			p.Delete.AddPath(new PathAndPattern(@"J:\Dump\", "*"));
 
-			var txt = svc.GetText(operations);
+			p.Ignore.AddFile(CleanUpService.WildCardToRegex(@"temp*.*"));
+			p.Ignore.AddDirectory(@"J:\Dump\Don't delete\");
+			p.Ignore.AddDirectory(@"J:\Dump\Scan dump\");
 
-			File.AppendAllText(path, txt);
-		}
+			svc.CleanUp(p, DryRun);
 
-		//LinqPad's Util.CurrentQueryPath loose equivalent
-		private static string Util_CurrentQueryPath()
-		{
-			var path = System.Reflection.Assembly.GetExecutingAssembly().Location;
-
-			return path;
+			audit.SaveLog();
 		}
 	}
 }

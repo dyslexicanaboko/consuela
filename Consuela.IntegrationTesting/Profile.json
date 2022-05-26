@@ -1,0 +1,25 @@
+{
+  "Profile": {
+    "Ignore": {
+      "Files": [ "temp*" ],
+      "Directories": [ "C:\\Dump\\IntegrationTests\\EntitySpacesCodeGen" ]
+    },
+    "Logging": {
+      "Disable": false,
+      "Path": "C:\\Dev\\GitHub\\consuela\\Consuela.IntegrationTesting\\bin\\Debug\\net6.0\\Audit",
+      "RetentionDays": 30
+    },
+    "Delete": {
+      "FileAgeThreshold": 30,
+      "Paths": [
+        {
+          "Path": "C:\\Dump\\IntegrationTests",
+          "Pattern": "*"
+        }
+      ],
+      "Schedule": {
+        "Frequency": 3
+      }
+    }
+  }
+}
