@@ -41,7 +41,7 @@ namespace Consuela.Service
                 //This process should happen endlessly until manually stopped
                 while (true)
                 {
-                    _schedulingService.ScheduleAction(() =>
+                    await _schedulingService.ScheduleAction(() =>
                     {
                         //Undecided as to whether or not to use the returned clean up results for something more
                         var results = _cleanUpService.CleanUp(_profile, false);

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Consuela.Lib.Services
 {
     public interface ISchedulingService
     {
-        void ScheduleAction(Action method);
+        Task ScheduleAction(Action method);
     }
 }

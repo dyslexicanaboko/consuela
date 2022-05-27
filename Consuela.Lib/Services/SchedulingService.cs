@@ -1,7 +1,7 @@
 ﻿using Consuela.Entity;
 using Consuela.Entity.ProfileParts;
 using System;
-using System.Timers;
+using System.Threading.Tasks;
 
 namespace Consuela.Lib.Services
 {
@@ -12,11 +12,9 @@ namespace Consuela.Lib.Services
     public class SchedulingService 
         : ISchedulingService
     {
-        private const double OneDay = 86400000;
+        private const int OneDay = 86400000; //Milliseconds
         private readonly IProfile _profile;
         private readonly IDateTimeService _dateTimeService;
-        private readonly Timer _timer;
-        private Action _method;
         private DateTime _endDate;
 
         public SchedulingService(IProfile profile, IDateTimeService dateTimeService)
@@ -24,31 +22,34 @@ namespace Consuela.Lib.Services
             _profile = profile;
 
             _dateTimeService = dateTimeService;
-
-            _timer = new Timer();
         }
 
-        public void ScheduleAction(Action method)
+        public async Task ScheduleAction(Action method)
         {
-            _method = method;
-
             _endDate = GetEndDate(_profile.Delete.Schedule);
 
             //Interval is going to be set to one day so that each day the timer will check if today is the target date
             //If not, it waits another day
             //If it is, then the action is performed and the timer is stopped
-            _timer.Interval = OneDay; //Milliseconds
-            _timer.Elapsed += Timer_Elapsed;
-            _timer.Start();
+            var keepWaiting = true;
+
+            while (keepWaiting)
+            {
+                await Task.Delay(OneDay);
+
+                if (!IsElapsed()) continue;
+
+                keepWaiting = false;
+
+                method();
+            }
         }
 
-        private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
+        private bool IsElapsed()
         {
-            if (_dateTimeService.Now.Date != _endDate.Date) return;
+            var isElapsed = _dateTimeService.Now.Date == _endDate.Date;
 
-            _method();
-            
-            _timer.Stop();
+            return isElapsed;
         }
 
         private DateTime GetEndDate(Schedule schedule)

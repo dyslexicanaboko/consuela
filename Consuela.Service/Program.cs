@@ -1,6 +1,8 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
 using Consuela.Lib.Services.ProfileManagement;
+using Consuela.Service.ManagementInterface;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -11,7 +13,7 @@ namespace Consuela.Service
     public class Program
     {
         //https://github.com/serilog/serilog-extensions-hosting/blob/dev/samples/SimpleServiceSample/Program.cs
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
@@ -20,11 +22,12 @@ namespace Consuela.Service
 
             try
             {
-                var hostBuilder = CreateHostBuilder(args);
+                var winSvc = CreateWindowsServiceHost(args);
+                var webApp = CreateWebApplicationHost();
 
-                var host = hostBuilder.Build();
-
-                host.Run();
+                await Task.WhenAll(
+                    winSvc.RunAsync(),
+                    webApp.RunAsync());
 
                 return 0;
             }
@@ -40,7 +43,17 @@ namespace Consuela.Service
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        private static IWebHost CreateWebApplicationHost()
+        {
+            var host = new WebHostBuilder()
+            .UseKestrel()
+            .UseStartup<Startup>()
+            .Build();
+
+            return host;
+        }
+
+        public static IHost CreateWindowsServiceHost(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
@@ -82,6 +95,6 @@ namespace Consuela.Service
                         .ReadFrom.Configuration(hostContext.Configuration)
                         .WriteTo.Seq("http://localhost:5341")
                         .WriteTo.Console();
-                });
+                }).Build();
     }
 }
