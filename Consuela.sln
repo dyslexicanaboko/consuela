@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.UnitTesting", "Con
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{97224D63-4847-4B74-97A9-06642E44CD61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consuela.Service", "Consuela.Service\Consuela.Service.csproj", "{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.Service", "Consuela.Service\Consuela.Service.csproj", "{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

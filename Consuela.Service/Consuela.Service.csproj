@@ -18,7 +18,4 @@
 	<ProjectReference Include="..\Consuela.Entities\Consuela.Entity.csproj" />
 	<ProjectReference Include="..\Consuela.Lib\Consuela.Lib.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pages\" />
-  </ItemGroup>
 </Project>

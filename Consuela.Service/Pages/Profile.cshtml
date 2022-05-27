@@ -1,0 +1,33 @@
+﻿@page
+@model Consuela.Service.Pages.ProfileModel
+@{
+}
+<fieldset>
+    <legend>Ignore</legend>
+    <label>Files and directories to ignore</label>
+    <label>Files</label>
+    <label>List[String]</label>
+    <label>Directories</label>
+    <label>List[String]</label>
+</fieldset>
+<fieldset>
+    <legend>Audit</legend>
+    <label>Audit is turned on by default.</label>
+    <label>Disable</label>
+    <label>Boolean</label>
+    <label>Path</label>
+    <label>String</label>
+    <label>Retention</label>
+    <label>Integer</label> Days
+</fieldset>
+<fieldset>
+    <legend>Delete</legend>
+    <label>Files and directories to scan for old files to delete.</label>
+    <label>Max Age</label>
+    <label>Integer</label> Days
+    <label>Paths</label>
+    <label>List[PathAndPattern]</label>
+    <label>Frequency</label>
+    <label>DropDownList[Enum]</label>
+</fieldset>
+
