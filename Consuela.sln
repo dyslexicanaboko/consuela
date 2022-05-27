@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{9722
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consuela.Service", "Consuela.Service\Consuela.Service.csproj", "{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ConsuelaSetup", "ConsuelaSetup\ConsuelaSetup.vdproj", "{79E51A57-0259-4D4C-847D-6BC665217176}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,8 @@ Global
 		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08E451FB-E9ED-4FE0-8AD9-4803C79B1677}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79E51A57-0259-4D4C-847D-6BC665217176}.Debug|Any CPU.ActiveCfg = Debug
+		{79E51A57-0259-4D4C-847D-6BC665217176}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
