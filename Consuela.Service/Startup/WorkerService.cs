@@ -1,9 +1,7 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace Consuela.Service
+namespace Consuela.Service.Startup
 {
     public class WorkerService : BackgroundService
     {
@@ -60,8 +58,6 @@ namespace Consuela.Service
 
                 throw;
             }
-            
-            await Task.CompletedTask;
         }
     }
 }
