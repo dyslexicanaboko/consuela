@@ -31,10 +31,21 @@ namespace Consuela.Lib.Services.ProfileManagement
         {
             lock (_fileLock)
             {
-                //If the file doesn't exist, just create it
-                if(!File.Exists(_profileFilePath)) File.Create(_profileFilePath);
+                var json = string.Empty;
 
-                var json = File.ReadAllText(_profileFilePath);
+                //If the file doesn't exist, just create it
+                if (!File.Exists(_profileFilePath))
+                {
+                    using (File.Create(_profileFilePath)) 
+                    { 
+                        //Once the file is created, the stream is opened, make sure to close it so the handle is released
+                        //The file is going to be empty regardless, so don't bother reading from it at this point.
+                    }
+                }
+                else
+                {
+                    json = File.ReadAllText(_profileFilePath);
+                }
 
                 _profileManager = JsonConvert.DeserializeObject<ProfileManager>(json);
 
