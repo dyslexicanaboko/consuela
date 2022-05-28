@@ -1,0 +1,74 @@
+﻿@page
+@model Consuela.Service.Pages.ProfileViewModel
+@{
+    var profile = Model.Profile;
+}
+<fieldset>
+    <legend>Ignore</legend>
+    <label>Files and directories to ignore</label>
+    <h4>Files</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>File pattern</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var file in profile.Ignore.Files)
+            {
+                <tr>
+                    <td>@(file)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h4>Directories</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Absolute paths</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var dir in profile.Ignore.Directories)
+            {
+                <tr>
+                    <td>@(dir)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>
+<hr/>
+<fieldset>
+    <legend>Audit</legend>
+    <label>Audit is turned on by default.</label><br/>
+    <label>Disable:</label>&nbsp;<label>@(profile.Logging.Disable)</label><br/>
+    <label>Path:</label>&nbsp;<label>@(profile.Logging.Path)</label><br/>
+    <label>Retention:</label>&nbsp;<label>@(profile.Logging.RetentionDays)</label> Days<br/>
+</fieldset>
+<hr/>
+<fieldset>
+    <legend>Delete</legend>
+    <label>Files and directories to scan for old files to delete.</label><br/>
+    <label>Max Age: </label>&nbsp;<label>@(profile.Delete.FileAgeThreshold)</label> Days<br/>
+    <label>Frequency: </label>&nbsp;<label>@(profile.Delete.Schedule)</label><br/>
+    <h4>Paths</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Search path</th>
+                <th>Search pattern</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var pp in profile.Delete.Paths)
+            {
+                <tr>
+                    <td>@(pp.Path)</td>
+                    <td>@(pp.Pattern)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>
