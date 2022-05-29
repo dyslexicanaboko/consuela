@@ -1,4 +1,5 @@
 ﻿@page
+@using Consuela.Entity;
 @model Consuela.Service.Pages.ProfileEditModel
 @{
     var profile = Model.Profile;
@@ -10,7 +11,8 @@
     <ul>
         <li>Files and directories to ignore</li>
         <li>Files can be exact naming or use a star pattern</li>
-        <li>Case sensitivity applies</li>
+        <li>Directories are absolute paths</li>
+        <li>Case sensitivity applies to both Files and Directories</li>
     </ul>
     <h4>Files</h4>
     <input id="txtAddIgnoreFile" type="text" /> <button onclick="btnAddIgnoreFileOnClick()">Add</button><br/>
@@ -34,7 +36,7 @@
         </tbody>
     </table>
     <h4>Directories</h4>
-    <input id="txtAddIgnoreDirectory" type="text" /> <button onclick="btnAddIgnoreDirectoryOnClick()">Add</button><br/>
+    <input id="txtAddIgnoreDirectory" type="text" size="100" /> <button onclick="btnAddIgnoreDirectoryOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
@@ -60,17 +62,25 @@
 <hr/>
 <fieldset>
     <legend>Audit</legend>
-    <label>Audit is turned on by default.</label><br/>
-    <label>Disable:</label>&nbsp;<label>@(profile.Logging.Disable)</label><br/>
-    <label>Path:</label>&nbsp;<label>@(profile.Logging.Path)</label><br/>
-    <label>Retention:</label>&nbsp;<label>@(profile.Logging.RetentionDays)</label> Days<br/>
+    <ul>
+        <li>Audit is turned on by default</li>
+        <li>Specify where to save audit files</li>
+        <li>Specify how long audit files should be kept</li>
+    </ul>
+    <label>Disable:</label>&nbsp;@Html.CheckBoxFor(m => m.Profile.Logging.Disable)<br/>
+    <label>Path:</label>&nbsp;@Html.TextBoxFor(m => m.Profile.Logging.Path, new { size = 100})<br/>
+    <label>Retention:</label>&nbsp;<input data-val="true" data-val-required="The RetentionDays field is required." id="Profile_Logging_RetentionDays" name="Profile.Logging.RetentionDays" type="number" value="30" class="numberInput"> Days
 </fieldset>
 <hr/>
 <fieldset>
     <legend>Delete</legend>
-    <label>Files and directories to scan for old files to delete.</label><br/>
-    <label>Max Age: </label>&nbsp;<label>@(profile.Delete.FileAgeThreshold)</label> Days<br/>
-    <label>Frequency: </label>&nbsp;<label>@(profile.Delete.Schedule)</label><br/>
+    <ul>
+        <li>Files and directories to scan for old files to delete</li>
+        <li>Specify how old files should be before they are deleted</li>
+        <li>Specify how often the service should be deleting files</li>
+    </ul>
+    <label>Max Age: </label>&nbsp;<input data-val="true" data-val-required="The FileAgeThreshold field is required." id="Profile_Delete_FileAgeThreshold" name="Profile.Delete.FileAgeThreshold" type="number" value="30" class="numberInput"> Days<br/>
+    <label>Frequency: </label>&nbsp;@Html.DropDownListFor(m => m.Profile.Delete.Schedule, Html.GetEnumSelectList(typeof(ScheduleFrequency)))<br/>
     <h4>Paths</h4>
     <label>Path</label><input id="txtAddDeletePath" type="text" /><br/>
     <label>Pattern</label><input id="txtAddDeletePattern" type="text" /><br/>

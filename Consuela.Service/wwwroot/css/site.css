@@ -16,3 +16,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.numberInput {
+    width: 50px;
+}
