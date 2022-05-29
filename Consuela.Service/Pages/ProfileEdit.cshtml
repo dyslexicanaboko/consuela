@@ -13,7 +13,7 @@
         <li>Case sensitivity applies</li>
     </ul>
     <h4>Files</h4>
-    <input id="txtAddFile" type="text" /> <button onclick="btnAddFileOnClick()">Add</button><br/>
+    <input id="txtAddIgnoreFile" type="text" /> <button onclick="btnAddIgnoreFileOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
@@ -25,7 +25,8 @@
             @foreach(var file in profile.Ignore.Files)
             {
                 <tr id="trIgnoreFiles_E@(i)">
-                    <td>@(file)</td><td><button onclick="btnRemoveFileOnClick('trIgnoreFiles_E@(i)')">X</button></td>
+                    <td>@(file)</td>
+                    <td><button onclick="btnRemoveItemOnClick('trIgnoreFiles_E@(i)')">X</button></td>
                 </tr>
 
                 i++;
@@ -33,18 +34,25 @@
         </tbody>
     </table>
     <h4>Directories</h4>
+    <input id="txtAddIgnoreDirectory" type="text" /> <button onclick="btnAddIgnoreDirectoryOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
                 <th>Absolute paths</th>
+                <th>X</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tbodyIgnoreDirectories">
+            @{ i = 0; }
+
             @foreach(var dir in profile.Ignore.Directories)
             {
-                <tr>
+                <tr id="trIgnoreDirectories_E@(i)">
                     <td>@(dir)</td>
+                    <td><button onclick="btnRemoveItemOnClick('trIgnoreDirectories_E@(i)')">X</button></td>
                 </tr>
+             
+                i++;
             }
         </tbody>
     </table>
@@ -64,20 +72,30 @@
     <label>Max Age: </label>&nbsp;<label>@(profile.Delete.FileAgeThreshold)</label> Days<br/>
     <label>Frequency: </label>&nbsp;<label>@(profile.Delete.Schedule)</label><br/>
     <h4>Paths</h4>
+    <label>Path</label><input id="txtAddDeletePath" type="text" /><br/>
+    <label>Pattern</label><input id="txtAddDeletePattern" type="text" /><br/>
+    <button onclick="btnAddDeletePathsOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
                 <th>Search path</th>
                 <th>Search pattern</th>
+                <th>X</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tbodyDeletePaths">
+            @{ i = 0; }
+
             @foreach(var pp in profile.Delete.Paths)
             {
-                <tr>
+
+                <tr id="trDeletePaths_E@(i)">
                     <td>@(pp.Path)</td>
                     <td>@(pp.Pattern)</td>
+                    <td><button onclick="btnRemoveItemOnClick('trDeletePaths_E@(i)')">X</button></td>
                 </tr>
+             
+                i++;
             }
         </tbody>
     </table>
