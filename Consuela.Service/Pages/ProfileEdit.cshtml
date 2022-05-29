@@ -2,28 +2,38 @@
 @model Consuela.Service.Pages.ProfileEditModel
 @{
     var profile = Model.Profile;
+    var i = 0;
 }
+<script src="~/js/ProfileEditService.js"></script>
 <fieldset>
     <legend>Ignore</legend>
-    <label>Files and directories to ignore</label>
+    <ul>
+        <li>Files and directories to ignore</li>
+        <li>Files can be exact naming or use a star pattern</li>
+        <li>Case sensitivity applies</li>
+    </ul>
     <h4>Files</h4>
-    <table>
+    <input id="txtAddFile" type="text" /> <button onclick="btnAddFileOnClick()">Add</button><br/>
+    <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
                 <th>File pattern</th>
+                <th>X</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tbodyIgnoreFiles">
             @foreach(var file in profile.Ignore.Files)
             {
-                <tr>
-                    <td>@(file)</td>
+                <tr id="trIgnoreFiles_E@(i)">
+                    <td>@(file)</td><td><button onclick="btnRemoveFileOnClick('trIgnoreFiles_E@(i)')">X</button></td>
                 </tr>
+
+                i++;
             }
         </tbody>
     </table>
     <h4>Directories</h4>
-    <table>
+    <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
                 <th>Absolute paths</th>
@@ -54,7 +64,7 @@
     <label>Max Age: </label>&nbsp;<label>@(profile.Delete.FileAgeThreshold)</label> Days<br/>
     <label>Frequency: </label>&nbsp;<label>@(profile.Delete.Schedule)</label><br/>
     <h4>Paths</h4>
-    <table>
+    <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
                 <th>Search path</th>
@@ -72,3 +82,5 @@
         </tbody>
     </table>
 </fieldset>
+<hr />
+<a href="~/ProfileView">Back</a>
