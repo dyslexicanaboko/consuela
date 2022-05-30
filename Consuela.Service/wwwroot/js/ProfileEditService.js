@@ -56,3 +56,11 @@ function btnAddItemOnClick(txtId, tbodyId, trPrefix, additionalColumns) {
 function btnRemoveItemOnClick(rowId) {
     document.getElementById(rowId).remove();
 }
+
+function setFrequencyByValue() {
+    var enumValue = parseInt(document.getElementById("hdnFrequency").value);
+
+    var ddl = document.getElementById("Edit_Delete_Schedule");
+
+    ddl.value = enumValue;
+}

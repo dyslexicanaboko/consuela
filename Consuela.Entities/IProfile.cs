@@ -8,7 +8,7 @@ namespace Consuela.Entity
 		Ignore Ignore { get; set; }
 
 		/// <summary>Logging options used to audit clean up operations.</summary>
-		Logging Logging { get; set; }
+		Audit Audit { get; set; }
 
 		/// <summary>Files and folders to delete durring clean up. Additional configuration surrounding clean up.</summary>
 		Delete Delete { get; set; }

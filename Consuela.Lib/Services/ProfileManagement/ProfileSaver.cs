@@ -100,16 +100,16 @@ namespace Consuela.Lib.Services.ProfileManagement
                 changed = true; 
             }
 
-            if (string.IsNullOrWhiteSpace(profile.Logging.Path)) 
+            if (string.IsNullOrWhiteSpace(profile.Audit.Path)) 
             { 
-                profile.Logging.Path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); 
+                profile.Audit.Path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); 
                 
                 changed = true; 
             }
 
-            if (profile.Logging.RetentionDays == 0) 
+            if (profile.Audit.RetentionDays == 0) 
             { 
-                profile.Logging.RetentionDays = ThirtyDays;
+                profile.Audit.RetentionDays = ThirtyDays;
                 
                 changed = true;
             }

@@ -1,7 +1,7 @@
 ﻿namespace Consuela.Entity.ProfileParts
 {
-	public class Logging
-		: IEquatable<Logging>
+	public class Audit
+		: IEquatable<Audit>
 	{
 		/// <summary>Set to false by default, Disable logging.</summary>
 		public bool Disable { get; set; }
@@ -12,9 +12,9 @@
 		/// <summary>The number of days to keep the rolling log files.</summary>
 		public int RetentionDays { get; set; }
 
-		public override bool Equals(object? obj) => Equals(obj as Logging);
+		public override bool Equals(object? obj) => Equals(obj as Audit);
 
-		public bool Equals(Logging? p)
+		public bool Equals(Audit? p)
 		{
 			if (p is null)
 			{
@@ -43,7 +43,7 @@
 
 		public override int GetHashCode() => (Disable, Path, RetentionDays).GetHashCode();
 
-		public static bool operator ==(Logging lhs, Logging rhs)
+		public static bool operator ==(Audit lhs, Audit rhs)
 		{
 			if (lhs is null)
 			{
@@ -60,6 +60,6 @@
 			return lhs.Equals(rhs);
 		}
 
-		public static bool operator !=(Logging lhs, Logging rhs) => !(lhs == rhs);
+		public static bool operator !=(Audit lhs, Audit rhs) => !(lhs == rhs);
 	}
 }

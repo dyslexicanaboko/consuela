@@ -24,8 +24,8 @@ namespace Consuela.UnitTesting.ServiceTests
 
 			var expected = new ProfileWatcher();
 			expected.Delete.FileAgeThreshold = 30;
-			expected.Logging.RetentionDays = 30;
-			expected.Logging.Path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			expected.Audit.RetentionDays = 30;
+			expected.Audit.Path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
 			//Act
 			var actual = profileSaver.Load().Profile;

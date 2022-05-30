@@ -18,7 +18,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 		public Ignore Ignore { get; set; } = new Ignore();
 
 		/// <inheritdoc/>
-		public Logging Logging { get; set; } = new Logging();
+		public Audit Audit { get; set; } = new Audit();
 
 		/// <inheritdoc/>
 		public Delete Delete { get; set; } = new Delete();
@@ -49,14 +49,14 @@ namespace Consuela.Lib.Services.ProfileManagement
 
 			var areEqualIgnore = Ignore == p.Ignore;
 			var areEqualDelete = Delete == p.Delete;
-			var areEqualLogging = Logging == p.Logging;
+			var areEqualLogging = Audit == p.Audit;
 				 
 			var areEqual = areEqualIgnore && areEqualDelete && areEqualLogging;
 
 			return areEqual;
 		}
 
-		public override int GetHashCode() => (Ignore, Logging, Delete).GetHashCode();
+		public override int GetHashCode() => (Ignore, Audit, Delete).GetHashCode();
 
 		public static bool operator ==(ProfileWatcher lhs, ProfileWatcher rhs)
 		{
