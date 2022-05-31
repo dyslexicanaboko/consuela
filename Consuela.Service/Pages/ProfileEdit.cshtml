@@ -17,7 +17,7 @@
         <li>Case sensitivity applies to both Files and Directories</li>
     </ul>
     <h4>Files</h4>
-    <input id="txtAddIgnoreFile" type="text" /> <button onclick="btnAddIgnoreFileOnClick()">Add</button><br/>
+    <input id="txtAddIgnoreFile" type="text" /> <button type="button" onclick="btnAddIgnoreFileOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
@@ -29,8 +29,8 @@
             @foreach(var file in profile.Ignore.Files)
             {
                 <tr id="trIgnoreFiles_E@(i)">
-                    <td>@(file)</td>
-                    <td><button onclick="btnRemoveItemOnClick('trIgnoreFiles_E@(i)')">X</button></td>
+                    <td><input type="text" name="IgnoreFiles[@i]" value="@(file)"></td>
+                    <td><button type="button" onclick="btnRemoveItemOnClick('trIgnoreFiles_E@(i)')">X</button></td>
                 </tr>
 
                 i++;
@@ -38,7 +38,7 @@
         </tbody>
     </table>
     <h4>Directories</h4>
-    <input id="txtAddIgnoreDirectory" type="text" size="100" /> <button onclick="btnAddIgnoreDirectoryOnClick()">Add</button><br/>
+    <input id="txtAddIgnoreDirectory" type="text" size="100" /> <button type="button" onclick="btnAddIgnoreDirectoryOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
@@ -52,8 +52,8 @@
             @foreach(var dir in profile.Ignore.Directories)
             {
                 <tr id="trIgnoreDirectories_E@(i)">
-                    <td>@(dir)</td>
-                    <td><button onclick="btnRemoveItemOnClick('trIgnoreDirectories_E@(i)')">X</button></td>
+                    <td><input type="text" name="IgnoreDirectories[@i]" value="@(dir)"></td>
+                    <td><button type="button" onclick="btnRemoveItemOnClick('trIgnoreDirectories_E@(i)')">X</button></td>
                 </tr>
              
                 i++;
@@ -83,7 +83,7 @@
     </ul>
     <label>Max Age: </label>&nbsp;<input id="Edited_Delete_FileAgeThreshold" name="Edited.Delete.FileAgeThreshold" type="number" value="@(profile.Delete.FileAgeThreshold)" class="numberInput"> Days<br/>
     <label>Frequency: </label>&nbsp;
-    <select id="Edited_Delete_Schedule" name="Edited.Delete.Schedule">
+    <select id="ddlFrequency" name="Edited.Delete.Schedule">
         <option value="1">Daily</option>
         <option value="2">Weekly</option>
         <option value="3">Monthly</option>
@@ -92,7 +92,7 @@
     <h4>Paths</h4>
     <label>Path</label><input id="txtAddDeletePath" type="text" /><br/>
     <label>Pattern</label><input id="txtAddDeletePattern" type="text" /><br/>
-    <button onclick="btnAddDeletePathsOnClick()">Add</button><br/>
+    <button type="button" onclick="btnAddDeletePathsOnClick()">Add</button><br/>
     <table class="form-control table table-striped table-secondary">
         <thead>
             <tr>
@@ -107,9 +107,9 @@
             @foreach(var pp in profile.Delete.Paths)
             {
                 <tr id="trDeletePaths_E@(i)">
-                    <td>@(pp.Path)</td>
-                    <td>@(pp.Pattern)</td>
-                    <td><button onclick="btnRemoveItemOnClick('trDeletePaths_E@(i)')">X</button></td>
+                    <td><input type="text" name="DeletePaths[@i].Path" value="@(pp.Path)"></td>
+                    <td><input type="text" name="DeletePaths[@i].Pattern" value="@(pp.Pattern)"></td>
+                    <td><button type="button" onclick="btnRemoveItemOnClick('trDeletePaths_E@(i)')">X</button></td>
                 </tr>
              
                 i++;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApplication1Razor.Pages
+namespace Consuela.Service.Pages
 {
     public class IndexModel : PageModel
     {

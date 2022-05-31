@@ -12,6 +12,16 @@ namespace Consuela.Service.Pages
         [BindProperty]
         public ProfileWatcher Edited { get; set; }
 
+        [BindProperty]
+        public List<string> IgnoreFiles { get; set; }
+        
+        [BindProperty]
+        public List<string> IgnoreDirectories { get; set; }
+
+        [BindProperty]
+        public List<PathAndPattern> DeletePaths { get; set; }
+
+        //Incoming model is the profile that is loaded from the container
         public ProfileEditModel(IProfile profile)
         {
             Profile = profile;
@@ -24,9 +34,10 @@ namespace Consuela.Service.Pages
 
         public void OnPostSubmit()
         {
-            var tbody = Request.Form["tbodyIgnoreFiles"];
-
-            if (true) ;
+            //Take the Edited profile and combine it together with the lists
+            Edited.Ignore.AddFile(IgnoreFiles);
+            Edited.Ignore.AddDirectory(IgnoreDirectories);
+            Edited.Delete.AddPath(DeletePaths);
         }
     }
 }
