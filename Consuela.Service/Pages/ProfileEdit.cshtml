@@ -7,7 +7,7 @@
     var i = 0;
 }
 <script src="~/js/ProfileEditService.js"></script>
-<form method="post">
+<form method="post" id="editForm">
 <fieldset>
     <legend>Ignore</legend>
     <ul>
@@ -29,7 +29,7 @@
             @foreach(var file in profile.Ignore.Files)
             {
                 <tr id="trIgnoreFiles_E@(i)">
-                    <td><input type="text" name="IgnoreFiles[@i]" value="@(file)"></td>
+                    <td><input type="text" name="IgnoreFiles" value="@(file)"></td>
                     <td><button type="button" onclick="btnRemoveItemOnClick('trIgnoreFiles_E@(i)')">X</button></td>
                 </tr>
 
@@ -52,7 +52,7 @@
             @foreach(var dir in profile.Ignore.Directories)
             {
                 <tr id="trIgnoreDirectories_E@(i)">
-                    <td><input type="text" name="IgnoreDirectories[@i]" value="@(dir)"></td>
+                    <td><input type="text" name="IgnoreDirectories" value="@(dir)"></td>
                     <td><button type="button" onclick="btnRemoveItemOnClick('trIgnoreDirectories_E@(i)')">X</button></td>
                 </tr>
              
@@ -107,8 +107,8 @@
             @foreach(var pp in profile.Delete.Paths)
             {
                 <tr id="trDeletePaths_E@(i)">
-                    <td><input type="text" name="DeletePaths[@i].Path" value="@(pp.Path)"></td>
-                    <td><input type="text" name="DeletePaths[@i].Pattern" value="@(pp.Pattern)"></td>
+                    <td><input type="text" name="DeletePaths.Path" value="@(pp.Path)"></td>
+                    <td><input type="text" name="DeletePaths.Pattern" value="@(pp.Pattern)"></td>
                     <td><button type="button" onclick="btnRemoveItemOnClick('trDeletePaths_E@(i)')">X</button></td>
                 </tr>
              
@@ -118,7 +118,7 @@
     </table>
 </fieldset>
 <hr />
-<a href="~/ProfileView">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" asp-page-handler="Submit">Save changes</button>
+<a href="~/ProfileView">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" asp-page-handler="Submit" onclick="submitForm()">Save changes</button>
 </form>
 <script>
     window.addEventListener("load", function () {
