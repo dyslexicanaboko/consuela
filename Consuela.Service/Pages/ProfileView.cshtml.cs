@@ -1,5 +1,4 @@
 using Consuela.Entity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Consuela.Service.Pages

@@ -5,14 +5,14 @@ using NUnit.Framework;
 namespace Consuela.UnitTesting.ServiceTests
 {
 	[TestFixture]
-	public class ProfileManagementTests
+	public class ProfileTests
 		: ConsuelaTestBase
 	{
 		private readonly Mock<IProfileSaver> _profileSaverMock = new Mock<IProfileSaver>();
 
-		public ProfileManagementTests()
+		public ProfileTests()
 		{
-			_profileSaverMock.Setup(x => x.Load()).Returns(LoadDefaultProfileManager());
+			_profileSaverMock.Setup(x => x.Get()).Returns(GetDefaultProfile());
 			_profileSaverMock.Setup(s => s.Save());
 		}
 
@@ -22,13 +22,13 @@ namespace Consuela.UnitTesting.ServiceTests
 			//Arrange
 			var profileSaver = _profileSaverMock.Object;
 
-			var expected = new ProfileWatcher();
+			var expected = new Profile();
 			expected.Delete.FileAgeThreshold = 30;
 			expected.Audit.RetentionDays = 30;
 			expected.Audit.Path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
 			//Act
-			var actual = profileSaver.Load().Profile;
+			var actual = (Profile)profileSaver.Get();
 
 			//Assert
 			AssertAreEqual(expected, actual);

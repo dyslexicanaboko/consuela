@@ -8,7 +8,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 {
     /// <summary>
     /// Handles the loading and saving of the <see cref="ProfileManager"/> class which has a
-    /// reference to the <seealso cref="Entity.IProfile"/>.
+    /// reference to the <seealso cref="IProfile"/>.
     /// </summary>
     public class ProfileSaver 
         : IProfileSaver
@@ -19,7 +19,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 
         private readonly string _profileFilePath;
 
-        private ProfileManager _profileManager;
+        private IProfile _profile; //Singleton one to one with what's in the file
 
         public ProfileSaver()
         {
@@ -27,7 +27,7 @@ namespace Consuela.Lib.Services.ProfileManagement
             _profileFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Profile.json");
         }
 
-        public ProfileManager Load()
+        public void Load()
         {
             lock (_fileLock)
             {
@@ -47,25 +47,31 @@ namespace Consuela.Lib.Services.ProfileManagement
                     json = File.ReadAllText(_profileFilePath);
                 }
 
-                _profileManager = JsonConvert.DeserializeObject<ProfileManager>(json);
+                _profile = JsonConvert.DeserializeObject<Profile>(json);
 
                 //If the JSON file does not have JSON in it (empty file) then the JSON convert will return null
                 //Instantiate the object in advance so that it will be saved as new on this run
-                if(_profileManager == null) _profileManager = new ProfileManager();
-
-                //If the profile is null for any reason then initialize it.
-                if (_profileManager.Profile == null) _profileManager.Profile = new ProfileWatcher();
+                if(_profile == null) _profile = new Profile();
 
                 //Any properties that are not set properly will gain defaults. If any changes are found then the file is saved.
-                SetDefaultsAsNeeded(_profileManager.Profile);
-
-                _profileManager.RegisterSaveDelegate(SaveHandler);
-
-                return _profileManager;
+                SetDefaultsAsNeeded(_profile);
             }
         }
 
-        public void SaveHandler(object sender, EventArgs e) => Save();
+        public IProfile Get()
+        {
+            if (_profile == null) Load();
+            
+            return _profile;
+        }
+
+        public void Save(IProfile profileChanges)
+        {
+            //If the existing profile and the incomingChanges are identical, then do nothing
+            if(_profile == profileChanges) return;
+
+            Adopt(profileChanges);
+        }
 
         public void Save()
         {
@@ -77,7 +83,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 
         private void InternalSave()
         {
-            var json = JsonConvert.SerializeObject(_profileManager, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(_profile, Formatting.Indented);
 
             File.WriteAllText(_profileFilePath, json);
         }
@@ -115,6 +121,21 @@ namespace Consuela.Lib.Services.ProfileManagement
             }
 
             if (changed) InternalSave();
+        }
+
+        private void Adopt(IProfile other)
+        {
+            //Since there are many lists involved, it's just easier to overwrite the whole file
+            //Then reload it into memory instead of trying to update each property at a time
+
+            //Set reference to incoming
+            _profile = other;
+
+            //Save to disk
+            Save();
+
+            //Reload from disk to disassociate from incoming reference
+            Load();
         }
     }
 }

@@ -19,19 +19,11 @@ namespace Consuela.Service.Startup
 
                 services.AddSingleton<IProfileSaver, ProfileSaver>();
 
-                services.AddSingleton<IProfileManager, ProfileManager>((serviceProvider) =>
+                services.AddTransient<IProfile, Profile>((serviceProvider) =>
                 {
                     var profileSaver = serviceProvider.GetService<IProfileSaver>();
-                    var profileManager = profileSaver.Load();
 
-                    return profileManager;
-                });
-
-                services.AddSingleton<IProfile, ProfileWatcher>((serviceProvider) =>
-                {
-                    var profileManager = serviceProvider.GetService<IProfileManager>();
-
-                    return profileManager.Profile;
+                    return (Profile)profileSaver.Get();
                 });
 
                 services.AddSingleton<IFileService, FileService>();

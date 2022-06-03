@@ -123,11 +123,15 @@ function setFrequencyByValue() {
     ddl.value = enumValue;
 }
 
+//Base call
 function setIndexedNames(indexedProperty) {
     setIndexedNamesR(indexedProperty, 0);
 }
 
+//Recursive call
 function setIndexedNamesR(indexedProperty, i) {
+    //Each time a node is renamed, it will no longer be found and the NodeList returned is 
+    //updated live so this caused issues with forEach and for loops.
     var names = document.getElementsByName(indexedProperty.name);
 
     console.dir(names);
@@ -150,19 +154,15 @@ function setIndexedNamesR(indexedProperty, i) {
 
     i++;
 
-    //Recurse until no more nodes are found
+    //Recurse until no more nodes are found in the DOM
     setIndexedNamesR(indexedProperty, i);
 }
 
 function submitForm() {
-    //var form = document.getElementById("editForm");
-
     //For RazorPages to serialize any of these table rows as a List<T> it's 
     //imperative that the index is sequential and non - repeating
     setIndexedNames(_global.ignore.files);
     setIndexedNames(_global.ignore.directories);
     setIndexedNames(_global.delete.paths.path);
     setIndexedNames(_global.delete.paths.pattern);
-
-    //form.submit();
 }

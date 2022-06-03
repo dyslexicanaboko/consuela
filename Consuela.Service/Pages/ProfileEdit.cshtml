@@ -3,7 +3,6 @@
 @model Consuela.Service.Pages.ProfileEditModel
 @{
     var profile = Model.Profile;
-    var isChecked = profile.Audit.Disable ? "checked=\"checked\"" : string.Empty;
     var i = 0;
 }
 <script src="~/js/ProfileEditService.js"></script>
@@ -69,9 +68,9 @@
         <li>Specify where to save audit files</li>
         <li>Specify how long audit files should be kept</li>
     </ul>
-    <label>Disable:</label>&nbsp;<input id="Edited_Audit_Disable" name="Edited.Audit.Disable" type="checkbox" @(isChecked)><br/>
-    <label>Path:</label>&nbsp;<input id="Edited_Audit_Path" name="Edited.Audit.Path" size="100" type="text" value="@(profile.Audit.Path)"><br/>
-    <label>Retention:</label>&nbsp;<input id="Edited_Audit_RetentionDays" name="Edited.Audit.RetentionDays" type="number" value="@(profile.Audit.RetentionDays)" class="numberInput"> Days
+    <label>Disable:</label>&nbsp;@Html.CheckBoxFor(x => x.Edited.Audit.Disable)<br/>
+    <label>Path:</label>&nbsp;<input name="Edited.Audit.Path" size="100" type="text" value="@(profile.Audit.Path)"><br/>
+    <label>Retention:</label>&nbsp;<input name="Edited.Audit.RetentionDays" type="number" value="@(profile.Audit.RetentionDays)" class="numberInput"> Days
 </fieldset>
 <hr/>
 <fieldset>
@@ -81,7 +80,7 @@
         <li>Specify how old files should be before they are deleted</li>
         <li>Specify how often the service should be deleting files</li>
     </ul>
-    <label>Max Age: </label>&nbsp;<input id="Edited_Delete_FileAgeThreshold" name="Edited.Delete.FileAgeThreshold" type="number" value="@(profile.Delete.FileAgeThreshold)" class="numberInput"> Days<br/>
+    <label>Max Age: </label>&nbsp;<input name="Edited.Delete.FileAgeThreshold" type="number" value="@(profile.Delete.FileAgeThreshold)" class="numberInput"> Days<br/>
     <label>Frequency: </label>&nbsp;
     <select id="ddlFrequency" name="Edited.Delete.Schedule">
         <option value="1">Daily</option>

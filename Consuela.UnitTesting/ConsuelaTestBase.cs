@@ -30,18 +30,7 @@ namespace Consuela.UnitTesting
 		
 		protected FileServiceDummy FileService() => new FileServiceDummy(new DateTimeService());
 
-		protected ProfileManager LoadDefaultProfileManager()
-		{
-			var profileManager = new ProfileManager();
-			profileManager.Profile = new ProfileWatcher();
-
-			var profileSaver = new ProfileSaver();
-			profileSaver.SetDefaultsAsNeeded(profileManager.Profile);
-
-			return profileManager;
-		}
-
-		protected IProfile GetDefaultProfile() => LoadDefaultProfileManager().Profile;
+		protected IProfile GetDefaultProfile() => new ProfileSaver().Get();
 
 		protected List<FileInfoEntity> AddFiles(FileServiceDummy fileSystem, string path, int files, string pattern = "File{0}.txt")
 		{

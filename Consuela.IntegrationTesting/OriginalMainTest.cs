@@ -14,8 +14,7 @@ namespace Consuela.IntegrationTesting
 		public void Original_LinqPad_main_method()
 		{
 			var profileSaver = new ProfileSaver();
-			var profileManager = profileSaver.Load();
-			var p = profileManager.Profile;
+			var p = profileSaver.Get();
 
 			var dtm = new DateTimeService();
 
