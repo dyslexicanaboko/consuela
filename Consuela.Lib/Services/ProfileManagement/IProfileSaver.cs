@@ -1,16 +1,20 @@
 ﻿using Consuela.Entity;
-using System;
+using static Consuela.Lib.Services.ProfileManagement.ProfileSaver;
 
 namespace Consuela.Lib.Services.ProfileManagement
 {
     public interface IProfileSaver
     {
-        ProfileManager Load();
+        void Load();
         
         void Save();
 
+        void Save(IProfile profileChanges);
+
+        IProfile Get();
+
         void SetDefaultsAsNeeded(IProfile profile);
 
-        void SaveHandler(object sender, EventArgs e);
+        event ProfileChanged Changed;
     }
 }

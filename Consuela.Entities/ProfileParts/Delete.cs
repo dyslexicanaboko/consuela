@@ -18,7 +18,15 @@
 
 			_paths.Add(path);
 		}
-		
+
+		public void AddPath(IEnumerable<PathAndPattern> paths)
+		{
+			foreach (var path in paths)
+			{
+				AddPath(path);
+			}
+		}
+
 		public override bool Equals(object? obj) => Equals(obj as Delete);
 
 		public bool Equals(Delete? p)

@@ -58,10 +58,10 @@ namespace Consuela.Lib.Services
             var d = _dateTimeService.Now;
 
             //Automatically a rolling audit file because it's time based
-            var path = Path.Combine(_profile.Logging.Path, $"{d:yyyy.MM.dd} Delete operations audit.log");
+            var path = Path.Combine(_profile.Audit.Path, $"{d:yyyy.MM.dd} Delete operations audit.log");
 
             //Just in case the path doesn't exist, attempt to create it
-            _fileService.CreateDirectory(_profile.Logging.Path);
+            _fileService.CreateDirectory(_profile.Audit.Path);
 
             //If the file doesn't exist, it will be created
             _fileService.AppendAllText(path, ToString());

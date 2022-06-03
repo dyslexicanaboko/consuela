@@ -7,28 +7,21 @@ namespace Consuela.Lib.Services.ProfileManagement
 	/// <summary>
 	/// Watches the properties of the <see cref="IProfile"/> that is loaded into memory to determine when to save changes.
 	/// </summary>
-	public class ProfileWatcher
-		: IProfile, IEquatable<ProfileWatcher>
+	public class Profile
+		: IProfile, IEquatable<Profile>
 	{
-		public delegate void SaveHandler(object sender, EventArgs e);
-		
-		public event SaveHandler Save;
-
 		/// <inheritdoc/>
 		public Ignore Ignore { get; set; } = new Ignore();
 
 		/// <inheritdoc/>
-		public Logging Logging { get; set; } = new Logging();
+		public Audit Audit { get; set; } = new Audit();
 
 		/// <inheritdoc/>
 		public Delete Delete { get; set; } = new Delete();
 
-		//TODO: Somehow, when this object is modified it needs to be saved by raising this event
-		private void RaiseSaveEvent() => Save?.Invoke(this, new EventArgs());
+		public override bool Equals(object? obj) => Equals(obj as Profile);
 
-		public override bool Equals(object? obj) => Equals(obj as ProfileWatcher);
-
-		public bool Equals(ProfileWatcher? p)
+		public bool Equals(Profile? p)
 		{
 			if (p is null)
 			{
@@ -49,16 +42,16 @@ namespace Consuela.Lib.Services.ProfileManagement
 
 			var areEqualIgnore = Ignore == p.Ignore;
 			var areEqualDelete = Delete == p.Delete;
-			var areEqualLogging = Logging == p.Logging;
+			var areEqualLogging = Audit == p.Audit;
 				 
 			var areEqual = areEqualIgnore && areEqualDelete && areEqualLogging;
 
 			return areEqual;
 		}
 
-		public override int GetHashCode() => (Ignore, Logging, Delete).GetHashCode();
+		public override int GetHashCode() => (Ignore, Audit, Delete).GetHashCode();
 
-		public static bool operator ==(ProfileWatcher lhs, ProfileWatcher rhs)
+		public static bool operator ==(Profile lhs, Profile rhs)
 		{
 			if (lhs is null)
 			{
@@ -75,6 +68,6 @@ namespace Consuela.Lib.Services.ProfileManagement
 			return lhs.Equals(rhs);
 		}
 
-		public static bool operator !=(ProfileWatcher lhs, ProfileWatcher rhs) => !(lhs == rhs);
+		public static bool operator !=(Profile lhs, Profile rhs) => !(lhs == rhs);
 	}
 }

@@ -24,6 +24,14 @@
 			_files.Add(file);
 		}
 
+		public void AddFile(IEnumerable<string> files)
+		{
+			foreach (var file in files)
+			{
+				AddFile(file);
+			}
+		}
+
 		/// <summary>
 		/// The absolute path to ignore. This protects the directory named and its contents.
 		/// </summary>
@@ -33,6 +41,14 @@
 			if (_directories.Contains(directory)) return;
 
 			_directories.Add(directory);
+		}
+
+		public void AddDirectory(IEnumerable<string> directories)
+		{
+			foreach (var directory in directories)
+			{
+				AddDirectory(directory);
+			}
 		}
 
 		public override bool Equals(object? obj) => Equals(obj as Ignore);

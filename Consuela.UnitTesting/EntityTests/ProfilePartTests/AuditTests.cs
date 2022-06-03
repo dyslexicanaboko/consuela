@@ -4,13 +4,13 @@ using NUnit.Framework;
 namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
 {
     [TestFixture]
-    internal class LoggingTests
-        : CompareTestBase<Logging>
+    internal class AuditTests
+        : CompareTestBase<Audit>
     {
-        protected override Logging GetFilledObject()
+        protected override Audit GetFilledObject()
         {
             //Arrange
-            var obj = new Logging();
+            var obj = new Audit();
             obj.RetentionDays = 1;
             obj.Path = "P";
             obj.Disable = true;
@@ -24,7 +24,7 @@ namespace Consuela.UnitTesting.EntityTests.ProfilePartTests
             //Arrange
             var left = GetFilledObject();
 
-            var right = new Logging();
+            var right = new Audit();
             right.RetentionDays = 2;
             right.Path = "P1";
             right.Disable = false;

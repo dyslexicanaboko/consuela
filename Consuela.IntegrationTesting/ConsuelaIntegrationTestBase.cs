@@ -25,16 +25,6 @@ namespace Consuela.IntegrationTesting
             Directory.CreateDirectory(EntitySpacesCodeGen);
         }
 
-        protected IProfile GetProfile()
-        {
-            //Profile is set by the Profile.json
-            var profileSaver = new ProfileSaver();
-            var profileManager = profileSaver.Load();
-            var p = profileManager.Profile;
-
-            return p;
-        }
-
         protected virtual IDateTimeService GetDateTimeService()
         {
             var svc = new DateTimeServiceDummy();
@@ -46,9 +36,7 @@ namespace Consuela.IntegrationTesting
         protected (IProfile, CleanUpService) GetCleanUpService()
         {
             //Profile is set by the Profile.json
-            var profileSaver = new ProfileSaver();
-            var profileManager = profileSaver.Load();
-            var p = profileManager.Profile;
+            var p = GetDefaultProfile();
 
             var dtm = GetDateTimeService();
 

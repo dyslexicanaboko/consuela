@@ -1,9 +1,7 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace Consuela.Service
+namespace Consuela.Service.Startup
 {
     public class WorkerService : BackgroundService
     {
@@ -41,8 +39,11 @@ namespace Consuela.Service
                 //This process should happen endlessly until manually stopped
                 while (true)
                 {
-                    _schedulingService.ScheduleAction(() =>
+                    await _schedulingService.ScheduleAction(() =>
                     {
+                        //TODO: A cloned copy of the profile needs to be provided here so that if the management
+                        //interface changes something, it doesn't affect the clean up simultaneously
+
                         //Undecided as to whether or not to use the returned clean up results for something more
                         var results = _cleanUpService.CleanUp(_profile, false);
 
@@ -60,8 +61,6 @@ namespace Consuela.Service
 
                 throw;
             }
-            
-            await Task.CompletedTask;
         }
     }
 }
