@@ -1,4 +1,5 @@
 ﻿using Consuela.Entity;
+using static Consuela.Lib.Services.ProfileManagement.ProfileSaver;
 
 namespace Consuela.Lib.Services.ProfileManagement
 {
@@ -13,5 +14,7 @@ namespace Consuela.Lib.Services.ProfileManagement
         IProfile Get();
 
         void SetDefaultsAsNeeded(IProfile profile);
+
+        event ProfileChanged Changed;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Consuela.Entity;
 using Consuela.Entity.ProfileParts;
+using Consuela.Lib.Services.ProfileManagement;
 using System;
 using System.Threading.Tasks;
 
@@ -13,20 +14,36 @@ namespace Consuela.Lib.Services
         : ISchedulingService
     {
         private const int OneDay = 86400000; //Milliseconds
-        private readonly IProfile _profile;
+        private readonly IProfileSaver _profileSaver;
         private readonly IDateTimeService _dateTimeService;
         private DateTime _endDate;
+        private object _lock = new object();
 
-        public SchedulingService(IProfile profile, IDateTimeService dateTimeService)
+        private IProfile Profile => _profileSaver.Get();
+
+        public SchedulingService(IProfileSaver profileSaver, IDateTimeService dateTimeService)
         {
-            _profile = profile;
+            _profileSaver = profileSaver;
+            _profileSaver.Changed += ProfileChanged;
 
             _dateTimeService = dateTimeService;
         }
 
+        //If the profile changes the end date needs to be updated
+        private void ProfileChanged(object sender, EventArgs e)
+        {
+            //If the profile is changing, don't allow the service to execute the clean up method
+            lock (_lock)
+            {
+                SetEndDate(); 
+            }
+        }
+
+        private void SetEndDate() => _endDate = CalculateEndDate(Profile.Delete.Schedule);
+
         public async Task ScheduleAction(Action method)
         {
-            _endDate = GetEndDate(_profile.Delete.Schedule);
+            SetEndDate();
 
             //Interval is going to be set to one day so that each day the timer will check if today is the target date
             //If not, it waits another day
@@ -41,7 +58,11 @@ namespace Consuela.Lib.Services
 
                 keepWaiting = false;
 
-                method();
+                //If the clean up method is being executed, do not allow the profile change to update anything
+                lock (_lock)
+                {
+                    method(); 
+                }
             }
         }
 
@@ -52,7 +73,7 @@ namespace Consuela.Lib.Services
             return isElapsed;
         }
 
-        private DateTime GetEndDate(Schedule schedule)
+        private DateTime CalculateEndDate(Schedule schedule)
         {
             var dtmNow = _dateTimeService.Now.Date;
 

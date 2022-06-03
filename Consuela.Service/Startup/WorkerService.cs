@@ -41,6 +41,9 @@ namespace Consuela.Service.Startup
                 {
                     await _schedulingService.ScheduleAction(() =>
                     {
+                        //TODO: A cloned copy of the profile needs to be provided here so that if the management
+                        //interface changes something, it doesn't affect the clean up simultaneously
+
                         //Undecided as to whether or not to use the returned clean up results for something more
                         var results = _cleanUpService.CleanUp(_profile, false);
 

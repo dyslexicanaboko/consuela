@@ -13,6 +13,10 @@ namespace Consuela.Lib.Services.ProfileManagement
     public class ProfileSaver 
         : IProfileSaver
     {
+        public delegate void ProfileChanged(object sender, EventArgs e);
+
+        public event ProfileChanged Changed;
+
         private const int ThirtyDays = 30;
 
         private readonly object _fileLock = new object();
@@ -136,6 +140,10 @@ namespace Consuela.Lib.Services.ProfileManagement
 
             //Reload from disk to disassociate from incoming reference
             Load();
+
+            RaiseChangedEvent();
         }
+
+        private void RaiseChangedEvent() => Changed?.Invoke(this, new EventArgs());
     }
 }
