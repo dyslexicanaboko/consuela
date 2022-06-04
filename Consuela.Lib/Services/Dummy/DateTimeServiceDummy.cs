@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Consuela.Lib.Services
+namespace Consuela.Lib.Services.Dummy
 {
-    public class DateTimeServiceDummy 
+    public class DateTimeServiceDummy
         : IDateTimeService
     {
         public DateTime Now => _dateTime;
