@@ -133,6 +133,42 @@ namespace Consuela.UnitTesting.ServiceTests
             Assert.AreEqual(ExpectedRemainingDirectoryCount, fileSystem.Directories.Count);
         }
 
+        /* Test was created to handle the scenario where a parent folder contains a target child folder that
+         * cannot be deleted, but must be cleaned as well. It's just an annoying scenario, but a valid one. 
+         * Example:
+         *  C:\Dump\
+         *  C:\Dump\Downloads\
+         * The expectation is that the Downloads folder will NOT be deleted, but it will be cleaned out.
+         * The bug was that the Downloads folder was not being deleted, but it wasn't being cleaned out. */
+        [Test]
+        public void Nested_target_folders_are_not_deleted_but_are_cleaned_up()
+        {
+            //Arrange
+            var downloadsDir = Path.Combine(BaseDirectory, "Downloads");
+
+            var profile = GetDefaultProfile();
+            profile.Delete.AddPath(new PathAndPattern(BaseDirectory, "*"));
+            profile.Delete.AddPath(new PathAndPattern(downloadsDir, "*")); //Clean it
+            profile.Ignore.AddDirectory(downloadsDir); //But don't delete it
+
+            var fileSystem = FileService();
+
+            AddFiles(fileSystem, BaseDirectory, 10);
+            AddFiles(fileSystem, downloadsDir, 10);
+
+            var expected = GetSimpleExpectedResults(fileSystem);
+            expected.DirectoriesDeleted.Clear(); //No directories should be deleted in this scenario
+
+            var svc = GetCleanUpService(fileSystem);
+
+            //Act
+            var actual = svc.CleanUp(profile, false);
+
+            //Assert
+            AssertAreEqual(expected, actual);
+            Assert.AreEqual(3, fileSystem.Directories.Count);
+        }
+
         [Test]
         public void Ideal_test() //I don't have a good name for this right now
         {
