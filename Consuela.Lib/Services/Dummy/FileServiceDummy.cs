@@ -42,6 +42,10 @@ namespace Consuela.Lib.Services.Dummy
                 .Where(x => r.IsMatch(x.Name))
                 .ToList();
 
+            //Because this won't be perfect, if a folder is nested inside of a folder you have
+            //to filter for just the target folder to prevent duplicate generations
+            //files = files.FindAll(x => x.DirectoryName == target.Path);
+
             return files;
         }
 

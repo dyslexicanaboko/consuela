@@ -26,21 +26,35 @@ namespace Consuela.Lib.Services
         {
             var results = new CleanUpResults();
 
-            var lstFiles = new List<FileInfoEntity>();
-
             //Get files to delete
             foreach (var target in profile.Delete.Paths)
             {
-                lstFiles.AddRange(_fileService.GetFiles(target, profile.Delete.FileAgeThreshold));
+                ProcessDeletePath(profile, target, results, dryRun);
             }
+
+            _auditService.SaveLog();
+
+            return results;
+        }
+
+        //Process one target at a time so that each one is processed individually according to its own rules
+        //This will avoid path conflicts between ignore and delete paths
+        private void ProcessDeletePath(IProfile profile, PathAndPattern target, CleanUpResults results, bool dryRun)
+        {
+            var lstFiles = _fileService.GetFiles(target, profile.Delete.FileAgeThreshold);
 
             //FullName has to be used instead of DirectoryName because DirectoryName will throw an exception for anything over 260 characters
             foreach (var d in profile.Ignore.Directories)
             {
+                //Only remove the ignored directories if it is NOT the target
+                //If it is the target then it means it needs to be cleaned (nested folder that is also a target path)
+                if (d == target.Path) continue;
+
+                //Remove all ignored [directories]
                 lstFiles.RemoveAll(x => x.FullName.StartsWith(d));
             }
 
-            //Remove all ignored files
+            //Remove all ignored [files]
             for (int i = lstFiles.Count - 1; i >= 0; i--)
             {
                 var f = lstFiles[i];
@@ -78,7 +92,7 @@ namespace Consuela.Lib.Services
                 }
             }
 
-            var lstFolders = FindEmptyFoldersToDelete(lstFiles, profile.Delete.Paths);
+            var lstFolders = FindEmptyFoldersToDelete(lstFiles, new[] { target });
 
             _auditService.Log($"Deleted Directories {lstFolders.Count}");
 
@@ -96,15 +110,11 @@ namespace Consuela.Lib.Services
                 catch (Exception ex)
                 {
                     results.DirectoryDeleteErrors.Add(folder, ex);
-                    
+
                     //Oh well
                     _auditService.Log(ex);
                 }
             }
-
-            _auditService.SaveLog();
-
-            return results;
         }
 
         //Get the folders to delete ultimately that are empty after files have been deleted
