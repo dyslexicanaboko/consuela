@@ -16,6 +16,10 @@ namespace Consuela.Service.Pages
         [BindProperty]
         public Profile Edited { get; set; }
 
+        /// <summary>Stand-in property for the Edited.Delete.Schedule.Frequency. This is for POST only.</summary>
+        [BindProperty]
+        public string FrequencyEnum { get; set; }
+
         /// <summary>Represents Profile.Ignore.Files property from table on page</summary>
         [BindProperty]
         public List<string> IgnoreFiles { get; set; }
@@ -50,6 +54,7 @@ namespace Consuela.Service.Pages
             Edited.Ignore.AddFile(IgnoreFiles);
             Edited.Ignore.AddDirectory(IgnoreDirectories);
             Edited.Delete.AddPath(DeletePaths);
+            Edited.Delete.Schedule.Frequency = Enum.Parse<ScheduleFrequency>(FrequencyEnum);
 
             //Writes the profile changes to disk.
             _profileSaver.Save(Edited);
