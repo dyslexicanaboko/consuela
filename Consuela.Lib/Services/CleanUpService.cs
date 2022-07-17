@@ -24,15 +24,20 @@ namespace Consuela.Lib.Services
 
         public CleanUpResults CleanUp(IProfile profile, bool dryRun)
         {
+            //Prepare for a new run by resetting all stateful variables
+            _auditService.Reset();
+
             var results = new CleanUpResults();
 
-            //Get files to delete
+            //Get files to delete per target path
             foreach (var target in profile.Delete.Paths)
             {
                 ProcessDeletePath(profile, target, results, dryRun);
             }
 
             _auditService.SaveLog();
+
+            _auditService.SaveStatistics(results);
 
             return results;
         }
@@ -86,13 +91,10 @@ namespace Consuela.Lib.Services
                 catch (Exception ex)
                 {
                     results.FileDeleteErrors.Add(f, ex);
-
-                    //Oh well
-                    _auditService.Log(ex);
                 }
             }
 
-            var lstFolders = FindEmptyFoldersToDelete(lstFiles, new[] { target });
+            var lstFolders = FindEmptyFoldersToDelete(results, lstFiles, new[] { target });
 
             _auditService.Log($"Deleted Directories {lstFolders.Count}");
 
@@ -110,15 +112,12 @@ namespace Consuela.Lib.Services
                 catch (Exception ex)
                 {
                     results.DirectoryDeleteErrors.Add(folder, ex);
-
-                    //Oh well
-                    _auditService.Log(ex);
                 }
             }
         }
 
         //Get the folders to delete ultimately that are empty after files have been deleted
-        private List<string> FindEmptyFoldersToDelete(List<FileInfoEntity> files, IReadOnlyList<PathAndPattern> searchPaths)
+        private List<string> FindEmptyFoldersToDelete(CleanUpResults results, List<FileInfoEntity> files, IReadOnlyList<PathAndPattern> searchPaths)
         {
             //Unfortunately because of the PathTooLongException I have to jump through hoops to make this work
             List<string> lst =
@@ -132,10 +131,10 @@ namespace Consuela.Lib.Services
 
             for (var i = lst.Count - 1; i > 0; i--)
             {
+                var filePath = lst[i];
+
                 try
                 {
-                    var filePath = lst[i];
-
                     //This call can thrown an exception, so it has to be done one at a time
                     var path = Path.GetDirectoryName(filePath);
 
@@ -148,18 +147,19 @@ namespace Consuela.Lib.Services
                 }
                 catch (PathTooLongException ptle)
                 {
-                    //Just leave these files behind because of this exception
-                    _auditService.Log(ptle.Message);
+                    //Just leave these directories behind because of this exception
+                    //As a work around using the filePath since I cannot capture the directory only
+                    results.DirectoryDeleteErrors.Add(filePath, ptle);
                 }
             }
 
             //Remove all directories that aren't empty
             for (var i = paths.Count - 1; i > 0; i--)
             {
+                var path = paths[i];
+
                 try
                 {
-                    var path = paths[i];
-
                     if (_fileService.PathContainsFiles(path))
                     {
                         lst.RemoveAt(i);
@@ -167,9 +167,8 @@ namespace Consuela.Lib.Services
                 }
                 catch (PathTooLongException ptle)
                 {
-                    //TODO: Needs to be logged properly
-                    //Just leave these files behind because of this exception
-                    _auditService.Log(ptle.Message);
+                    //Just leave these directories behind because of this exception
+                    results.DirectoryDeleteErrors.Add(path, ptle);
                 }
             }
 

@@ -22,6 +22,9 @@ namespace Consuela.Service
                 //Hang a Windows Service off of the WebApplication host
                 builder.Host.UseWindowsService();
 
+                //Want to be able to reload the file when it is changed
+                builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
                 //Configure the container
                 ContainerConfig.Configure(builder.Host);
 

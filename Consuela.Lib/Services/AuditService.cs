@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace Consuela.Lib.Services
 {
@@ -12,6 +13,7 @@ namespace Consuela.Lib.Services
         private readonly IFileService _fileService;
         private readonly IDateTimeService _dateTimeService;
         private readonly List<string> _logs;
+        private DateTime _now;
 
         public AuditService(
             IProfile profile, 
@@ -25,6 +27,8 @@ namespace Consuela.Lib.Services
             _dateTimeService = dateTimeService;
 
             _logs = new List<string>();
+
+            Reset(); //Initializing variables for first run
         }
 
         public void Log(string message) => Add(message);
@@ -53,20 +57,65 @@ namespace Consuela.Lib.Services
             return final;
         }
 
-        public void SaveLog()
+        /// <summary>
+        /// Must be called in between separate Clean Up Service runs to ensure that
+        /// stateful variables are reset.
+        /// </summary>
+        public void Reset()
         {
-            var d = _dateTimeService.Now;
+            _logs.Clear();
 
-            //Automatically a rolling audit file because it's time based
-            var path = Path.Combine(_profile.Audit.Path, $"{d:yyyy.MM.dd} Delete operations audit.log");
+            _now = _dateTimeService.Now;
 
             //Just in case the path doesn't exist, attempt to create it
             _fileService.CreateDirectory(_profile.Audit.Path);
 
+            //TODO: Automatic clean up of rolling audit files in separate method
+            //Can't do this until a protection is offered where the Logging directory is NOT the EXE directory!
+        }
+
+        public void SaveLog()
+        {
+            var path = GetTimestampedFullFilePath("Delete operations audit.log");
+
             //If the file doesn't exist, it will be created
             _fileService.AppendAllText(path, ToString());
 
-            //TODO: Automatic clean up of rolling audit files
+        }
+
+        //Automatically a rolling audit file because it's time based
+        private string GetTimestampedFullFilePath(string fileNameSuffix)
+            => Path.Combine(_profile.Audit.Path, $"{_now:yyyy.MM.dd}{fileNameSuffix}");
+
+        public void SaveStatistics(CleanUpResults results)
+        {
+            //Using an anonymous object because it won't be used anywhere else
+            var stats = new
+            {
+                CreatedOn = _now,
+                Counts = new
+                {
+                    FileDeleteErrors = results.FileDeleteErrors.Count,
+                    DirectoryDeleteErrors = results.DirectoryDeleteErrors.Count,
+                    DirectoriesDeleted = results.DirectoriesDeleted.Count,
+                    FilesDeleted = results.FilesDeleted.Count,
+                    FilesIgnored = results.FilesIgnored.Count
+                },
+                results.DirectoryDeleteErrors,
+                results.FileDeleteErrors
+            };
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            var serialized = JsonSerializer.Serialize(stats, options);
+
+            var path = GetTimestampedFullFilePath("Statistics and Errors.json");
+
+            //If the file doesn't exist, it will be created
+            _fileService.AppendAllText(path, serialized);
         }
     }
 }
