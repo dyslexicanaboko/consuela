@@ -44,11 +44,11 @@ namespace Consuela.Service.Startup
                         //TODO: A cloned copy of the profile needs to be provided here so that if the management
                         //interface changes something, it doesn't affect the clean up simultaneously
 
-                        //Undecided as to whether or not to use the returned clean up results for something more
                         var results = _cleanUpService.CleanUp(_profile, false);
 
-                        //For now putting summary of results on the screen
+                        //Visible to console
                         _logger.LogInformation($"Clean up summary:{Environment.NewLine}{results}");
+
                     });
 
                     //Just so the loop doesn't cause a run away train scenario, wait between runs
