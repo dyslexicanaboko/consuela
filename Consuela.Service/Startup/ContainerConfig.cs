@@ -15,6 +15,8 @@ namespace Consuela.Service.Startup
                 services.AddRazorPages();
 
                 //Dependency injection below
+                services.AddSingleton<IAppSettingsService, AppSettingsService>();
+                
                 services.AddTransient<IDateTimeService, DateTimeService>();
 
                 services.AddSingleton<IProfileSaver, ProfileSaver>();
@@ -42,8 +44,12 @@ namespace Consuela.Service.Startup
                 //Since this is configured here, don't do it in the JSON also otherwise the logging will appear twice
                 loggerConfiguration
                     .ReadFrom.Configuration(hostContext.Configuration)
-                    .WriteTo.Seq("http://localhost:5341")
                     .WriteTo.Console();
+
+                if (hostContext.HostingEnvironment.IsDevelopment())
+                {
+                    loggerConfiguration.WriteTo.Seq("http://localhost:5341");
+                }
             });
         }
     }

@@ -1,0 +1,17 @@
+﻿@page
+@model Consuela.Service.Pages.AppSettingsEditModel
+@{
+}
+<form method="post" id="editForm">
+    <details>
+      <summary>Editing the AppSettings</summary>
+      <ul>
+          <li>This page is here as a convenience, but changing things like the port number will require restart.</li>
+          <li>If you have any trouble using this page, you can just edit the appsettings.json file directly.</li>
+      </ul>
+    </details>
+    <label>Site Host:</label>&nbsp;<input name="SiteHost" type="text" value="@(Model.SiteHost)"><br />
+    <label>Site Port:</label>&nbsp;<input name="SitePort" type="number" min="255" max="65535" value="@(Model.SitePort)"><br />
+    <hr />
+    <a href="~/Index">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" asp-page-handler="Submit">Save changes</button>
+</form>
