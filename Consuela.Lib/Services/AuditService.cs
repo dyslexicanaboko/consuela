@@ -85,7 +85,7 @@ namespace Consuela.Lib.Services
 
         //Automatically a rolling audit file because it's time based
         private string GetTimestampedFullFilePath(string fileNameSuffix)
-            => Path.Combine(_profile.Audit.Path, $"{_now:yyyy.MM.dd}{fileNameSuffix}");
+            => Path.Combine(_profile.Audit.Path, $"{_now:yyyy.MM.dd} {fileNameSuffix}");
 
         public void SaveStatistics(CleanUpResults results)
         {
