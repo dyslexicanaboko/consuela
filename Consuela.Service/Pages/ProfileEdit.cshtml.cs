@@ -50,6 +50,14 @@ namespace Consuela.Service.Pages
 
         public IActionResult OnPostSubmit()
         {
+            if (AppDomain.CurrentDomain.BaseDirectory == Edited.Audit.Path)
+            {
+                return new ObjectResult(new { Message = "Audit path cannot be where the executable resides. Choose another location." })
+                {
+                    StatusCode = StatusCodes.Status405MethodNotAllowed
+                };
+            }
+
             //Take the Edited profile and combine it together with the lists
             Edited.Ignore.AddFile(IgnoreFiles);
             Edited.Ignore.AddDirectory(IgnoreDirectories);

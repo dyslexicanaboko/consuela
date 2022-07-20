@@ -1,5 +1,6 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
+using Consuela.Lib.Services.Dummy;
 using Consuela.Lib.Services.ProfileManagement;
 using Consuela.UnitTesting;
 using NUnit.Framework;
