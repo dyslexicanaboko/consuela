@@ -1,6 +1,7 @@
 ﻿using Consuela.Entity;
 using Consuela.Lib.Services;
 using Consuela.Lib.Services.ProfileManagement;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace Consuela.IntegrationTesting
@@ -20,7 +21,7 @@ namespace Consuela.IntegrationTesting
 
 			var fs = new FileService(dtm);
 
-			var audit = new AuditService(p, fs, dtm);
+			var audit = new AuditService(p, fs, dtm, NullLogger<AuditService>.Instance);
 
 			var svc = new CleanUpService(audit, fs);
 
