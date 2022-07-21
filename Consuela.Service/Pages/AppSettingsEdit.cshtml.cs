@@ -35,6 +35,7 @@ namespace Consuela.Service.Pages
             uri.Port = SitePort;
 
             _service.HostUrl = uri.ToString();
+            _service.SaveChanges();
 
             return RedirectToPage("Index");
         }

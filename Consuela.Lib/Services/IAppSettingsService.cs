@@ -3,5 +3,7 @@
     public interface IAppSettingsService
     {
         string HostUrl { get; set; }
+
+        void SaveChanges();
     }
 }
