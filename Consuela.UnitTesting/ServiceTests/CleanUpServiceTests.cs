@@ -26,7 +26,7 @@ namespace Consuela.UnitTesting.ServiceTests
         private CleanUpService GetCleanUpService(IFileService fileService = null)
         {
             //This will never change for any of the tests
-            _mockLoggingService.Setup(m => m.Log(It.IsAny<string>()));
+            _mockLoggingService.Setup(m => m.LogDirectory(It.IsAny<string>()));
 
             //These are the default setups
             _mockFileService.Setup(x => x.DeleteFileIfExists(It.IsAny<FileInfoEntity>()));

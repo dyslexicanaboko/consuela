@@ -112,7 +112,7 @@ namespace Consuela.Lib.Services.ProfileManagement
 
             if (string.IsNullOrWhiteSpace(profile.Audit.Path)) 
             { 
-                profile.Audit.Path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); 
+                profile.Audit.Path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Audit"); 
                 
                 changed = true; 
             }

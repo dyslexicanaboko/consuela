@@ -82,7 +82,7 @@ namespace Consuela.Lib.Services
             {
                 try
                 {
-                    _auditService.Log(f);
+                    _auditService.LogFile(f);
 
                     if (!dryRun) _fileService.DeleteFileIfExists(f);
 
@@ -103,7 +103,7 @@ namespace Consuela.Lib.Services
             {
                 try
                 {
-                    _auditService.Log($"Directory,NULL,{folder},NULL");
+                    _auditService.LogDirectory($"Directory,NULL,{folder},NULL");
 
                     if (!dryRun) _fileService.DeleteDirectoryIfExists(folder);
 

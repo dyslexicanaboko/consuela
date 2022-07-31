@@ -20,8 +20,10 @@ namespace Consuela.IntegrationTesting
 			var dtm = new DateTimeService();
 
 			var fs = new FileService(dtm);
+			
+			var excel = new ExcelFileWriterService();
 
-			var audit = new AuditService(p, fs, dtm, NullLogger<AuditService>.Instance);
+			var audit = new AuditService(p, fs, excel, dtm, NullLogger<AuditService>.Instance);
 
 			var svc = new CleanUpService(audit, fs);
 

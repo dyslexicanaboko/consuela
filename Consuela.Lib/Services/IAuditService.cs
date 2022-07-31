@@ -1,5 +1,4 @@
 ﻿using Consuela.Entity;
-using System;
 
 namespace Consuela.Lib.Services
 {
@@ -7,16 +6,12 @@ namespace Consuela.Lib.Services
     {
         void Reset();
 
-        void Log(string message);
+        void LogDirectory(string path);
 
-        void Log(FileInfoEntity file);
-
-        void Log(Exception exception);
+        void LogFile(FileInfoEntity file);
 
         void SaveLog();
 
         void SaveStatistics(CleanUpResults results);
-
-        string ToString();
     }
 }
