@@ -75,14 +75,14 @@ namespace Consuela.Lib.Services
             //Order by creation time
             lstFiles = lstFiles.OrderBy(x => x.CreationTime).ToList();
 
-            _auditService.Log($"Deleted Files {lstFiles.Count}");
+            Console.WriteLine($"Deleted Files {lstFiles.Count}");
 
             //Delete the individual files
             foreach (var f in lstFiles)
             {
                 try
                 {
-                    _auditService.Log(f);
+                    _auditService.LogFile(f);
 
                     if (!dryRun) _fileService.DeleteFileIfExists(f);
 
@@ -96,14 +96,14 @@ namespace Consuela.Lib.Services
 
             var lstFolders = FindEmptyFoldersToDelete(results, lstFiles, new[] { target });
 
-            _auditService.Log($"Deleted Directories {lstFolders.Count}");
+            Console.WriteLine($"Deleted Directories {lstFolders.Count}");
 
             //Lastly delete the folders that are empty, but not the search paths
             foreach (var folder in lstFolders)
             {
                 try
                 {
-                    _auditService.Log($"Directory,NULL,{folder},NULL");
+                    _auditService.LogDirectory($"Directory,NULL,{folder},NULL");
 
                     if (!dryRun) _fileService.DeleteDirectoryIfExists(folder);
 

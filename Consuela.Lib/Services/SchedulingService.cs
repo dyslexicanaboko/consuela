@@ -39,6 +39,8 @@ namespace Consuela.Lib.Services
             }
         }
 
+        public DateTime GetEndDate() => _endDate;
+
         private void SetEndDate() => _endDate = CalculateEndDate(Profile.Delete.Schedule);
 
         public async Task ScheduleAction(Action method)

@@ -1,4 +1,5 @@
 ﻿using Consuela.Entity;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,37 +12,65 @@ namespace Consuela.Lib.Services
     {
         private readonly IProfile _profile;
         private readonly IFileService _fileService;
+        private readonly IExcelFileWriterService _excelFileWriterService;
         private readonly IDateTimeService _dateTimeService;
-        private readonly List<string> _logs;
+        private readonly ILogger _logger;
+        private readonly List<string> _plainTextLog;
+        private readonly List<AuditRow> _auditRows;
         private DateTime _now;
 
         public AuditService(
             IProfile profile, 
             IFileService fileService,
-            IDateTimeService dateTimeService)
+            IExcelFileWriterService excelFileWriterService,
+            IDateTimeService dateTimeService,
+            ILogger<AuditService> logger)
         {
             _profile = profile;
             
             _fileService = fileService;
-            
+
+            _excelFileWriterService = excelFileWriterService;
+
             _dateTimeService = dateTimeService;
 
-            _logs = new List<string>();
+            _logger = logger;
+
+            _plainTextLog = new List<string>();
+
+            _auditRows = new List<AuditRow>();
 
             Reset(); //Initializing variables for first run
         }
 
-        public void Log(string message) => Add(message);
-
-        public void Log(FileInfoEntity file) => Add($"File,{file.CreationTime:yyyy/MM/dd HH:mm:ss},{file.DirectoryName},{file.Name}");
-
-        public void Log(Exception exception) => Add(exception.ToString());
-
-        private void Add(string message)
+        public void LogDirectory(string path) => Add(new AuditRow
         {
-            Console.WriteLine(message);
+            FileType = "Directory",
+            CreationTime = null,
+            Path = path,
+            Filename = null
+        });
 
-            _logs.Add(message);
+        public void LogFile(FileInfoEntity file) => Add(new AuditRow
+        {
+            FileType = "File",
+            CreationTime = file.CreationTime,
+            Path = file.DirectoryName,
+            Filename = file.Name
+        });
+
+        private void Add(AuditRow auditRow)
+        {
+            //For excel
+            _auditRows.Add(auditRow);
+
+            var message = $"{auditRow.FileType},{auditRow.CreationTime:yyyy/MM/dd HH:mm:ss},{auditRow.Path},{auditRow.Filename}";
+
+            //To see live
+            _logger.LogInformation(message);
+
+            //For the text log version
+            _plainTextLog.Add(message);
         }
         
         public override string ToString()
@@ -50,7 +79,7 @@ namespace Consuela.Lib.Services
 
             var header = $"{_dateTimeService.Now:yyyy.MM.dd HH:mm:ss}{n}===================================================={n}";
 
-            var body = string.Join(n, _logs);
+            var body = string.Join(n, _plainTextLog);
 
             var final = header + body + n + n;
 
@@ -63,29 +92,84 @@ namespace Consuela.Lib.Services
         /// </summary>
         public void Reset()
         {
-            _logs.Clear();
+            _plainTextLog.Clear();
+            
+            _auditRows.Clear();
 
             _now = _dateTimeService.Now;
 
             //Just in case the path doesn't exist, attempt to create it
             _fileService.CreateDirectory(_profile.Audit.Path);
 
-            //TODO: Automatic clean up of rolling audit files in separate method
-            //Can't do this until a protection is offered where the Logging directory is NOT the EXE directory!
+            PurgeExpiredLogs();
         }
 
         public void SaveLog()
         {
             var path = GetTimestampedFullFilePath("Delete operations audit.log");
 
+            try
+            {
+                //Excel stuff can be weird sometimes, so wrapping in try/catch
+                SaveExcelFile();
+            }
+            catch (Exception ex)
+            {
+                //To see live
+                _logger.LogError(ex, "Couldn't save excel file log.");
+
+                //Log the problem somewhere to see it.
+                _plainTextLog.Add($"Couldn't save excel file log. Error:{Environment.NewLine}{ex}");
+            }
+
             //If the file doesn't exist, it will be created
             _fileService.AppendAllText(path, ToString());
+        }
 
+        private void SaveExcelFile()
+        {
+            var path = GetTimestampedFullFilePath("Delete audit.xlsx");
+
+            var data = new ExcelSheetData
+            {
+                Headers = new List<string> { "File Type", "Created On", "Path", "Filename" },
+                SheetName = "Delete audit"
+            };
+
+            data.RowData = new object[_auditRows.Count, data.Headers.Count];
+
+            //Transfer the audit rows to the excel range
+            for (int i = 0; i < _auditRows.Count; i++)
+            {
+                var a = _auditRows[i];
+
+                data.RowData[i, 0] = a.FileType;
+                data.RowData[i, 1] = a.CreationTime;
+                data.RowData[i, 2] = a.Path;
+                data.RowData[i, 3] = a.Filename;
+            }
+
+            _excelFileWriterService.SaveAs(data, path);
+        }
+
+        private void PurgeExpiredLogs()
+        {
+            try
+            {
+                //This is internal clean up so I am not going to bother making it configurable
+                var files = _fileService.GetFiles(new PathAndPattern(_profile.Audit.Path, "*"), 30);
+
+                files.ForEach(_fileService.DeleteFileIfExists);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failure during log purge. 0x202207210038");
+            }
         }
 
         //Automatically a rolling audit file because it's time based
         private string GetTimestampedFullFilePath(string fileNameSuffix)
-            => Path.Combine(_profile.Audit.Path, $"{_now:yyyy.MM.dd}{fileNameSuffix}");
+            => Path.Combine(_profile.Audit.Path, $"{_now:yyyy.MM.dd_HH.mm.ss} {fileNameSuffix}");
 
         public void SaveStatistics(CleanUpResults results)
         {

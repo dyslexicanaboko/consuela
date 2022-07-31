@@ -158,6 +158,27 @@ function setIndexedNamesR(indexedProperty, i) {
     setIndexedNamesR(indexedProperty, i);
 }
 
+function isAlertPathValid() {
+    var exeDir = removeTrailingSlash(document.getElementById("hdnExeDirectory").value);
+    var auditPath = removeTrailingSlash(document.getElementById("txtEditedAuditPath").value);
+    var div = document.getElementById("divAuditPathWarning");
+
+    //If the exe directory is equal to the audit path then warn the user
+    if (exeDir !== auditPath) {
+        div.classList.add("d-none");
+
+        return true;
+    }
+
+    div.classList.remove("d-none");
+
+    return false;
+}
+
+function removeTrailingSlash(str) {
+    return str.replace(/\\+$/, '');
+}
+
 function submitForm() {
     //For RazorPages to serialize any of these table rows as a List<T> it's 
     //imperative that the index is sequential and non - repeating
@@ -165,4 +186,8 @@ function submitForm() {
     setIndexedNames(_global.ignore.directories);
     setIndexedNames(_global.delete.paths.path);
     setIndexedNames(_global.delete.paths.pattern);
+
+    var isValid = isAlertPathValid();
+
+    return isValid;
 }

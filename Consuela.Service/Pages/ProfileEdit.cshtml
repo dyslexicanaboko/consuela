@@ -69,8 +69,12 @@
         <li>Specify how long audit files should be kept</li>
     </ul>
     <label>Disable:</label>&nbsp;@Html.CheckBoxFor(x => x.Edited.Audit.Disable)<br/>
-    <label>Path:</label>&nbsp;<input name="Edited.Audit.Path" size="100" type="text" value="@(profile.Audit.Path)"><br/>
+    <label>Path:</label>&nbsp;<input id="txtEditedAuditPath" name="Edited.Audit.Path" size="100" type="text" value="@(profile.Audit.Path)"><br/>
+    <div id="divAuditPathWarning" class="alert alert-warning d-none" role="alert">
+      Audit path cannot be where the executable resides. Choose another location please.
+    </div>
     <label>Retention:</label>&nbsp;<input name="Edited.Audit.RetentionDays" type="number" value="@(profile.Audit.RetentionDays)" class="numberInput"> Days
+    <input type="hidden" id="hdnExeDirectory" value="@(Model.ExeDirectory)" />
 </fieldset>
 <hr/>
 <fieldset>
@@ -117,7 +121,7 @@
     </table>
 </fieldset>
 <hr />
-<a href="~/ProfileView">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" asp-page-handler="Submit" onclick="submitForm()">Save changes</button>
+<a href="~/ProfileView">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" asp-page-handler="Submit" onclick="return submitForm();">Save changes</button>
 </form>
 <script>
     window.addEventListener("load", function () {

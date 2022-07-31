@@ -16,6 +16,12 @@ namespace Consuela.Lib.Services.Dummy
 
         }
 
+        public DateTime GetEndDate()
+        {
+            //This doesn't actually matter in this context
+            return DateTime.Now;
+        }
+
         public async Task ScheduleAction(Action method)
         { 
             method();

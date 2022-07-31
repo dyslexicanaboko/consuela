@@ -69,4 +69,12 @@ These files are all part of an ignore list so that they are not deleted because 
 # Change log
 1. 08/04/2018 - Initial upload of LinqPad Script named "Delete files older than.linq". Been using it in conjunction with Windows Task Scheduler for a long time. Works well as far as I can tell even if it is not perfect. The *worst* that can happen is sometimes it doesn't delete files which isn't a big deal, just annoying. This is a well known problem with C# and file system operations.
 2. 04/22/2022 - Creation of repo and port of LinqPad script into C# dot net core project. Initial upload so I have a baseline. I have every intention of fleshing this program out more into a Windows Service and potentially hosting a Web Application management interface. I want to break down the code into interfaces and services so I can unit test and integration test appropriately. This program is difficuilt to test because of the file system component.
-
+3. 07/30/2022 - Added quality of life changes including:
+- Indicating when the next run will happen in the UI
+- Being able to change the port number for the web server through the UI or appsettings.json
+- Some minor profile validation on save to avoid making regretable mistakes. IE: Audit path is EXE path, bad idea.
+- Exporting the run statistics as a JSON file. Removed it from the text log.
+- Exporting the audit log as an excel file besides just a text log.
+- Rolling audit file purge after 30 days.
+- Some minor UI tweaks including a page for viewing/editing the port number.
+- Found some bugs regarding how the clean up service was running and not able to process nested clean up folders. It works now.

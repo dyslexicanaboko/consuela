@@ -32,6 +32,8 @@ namespace Consuela.Service.Pages
         [BindProperty]
         public List<PathAndPattern> DeletePaths { get; set; }
 
+        public string ExeDirectory => AppDomain.CurrentDomain.BaseDirectory;
+
         /// <summary>
         /// Profile saver contains the existing Profile that is saved on disk.
         /// </summary>
@@ -50,6 +52,14 @@ namespace Consuela.Service.Pages
 
         public IActionResult OnPostSubmit()
         {
+            if (ArePathsEqual(AppDomain.CurrentDomain.BaseDirectory, Edited.Audit.Path))
+            {
+                return new ObjectResult(new { Message = "Audit path cannot be where the executable resides. Choose another location please." })
+                {
+                    StatusCode = StatusCodes.Status405MethodNotAllowed
+                };
+            }
+
             //Take the Edited profile and combine it together with the lists
             Edited.Ignore.AddFile(IgnoreFiles);
             Edited.Ignore.AddDirectory(IgnoreDirectories);
@@ -60,6 +70,17 @@ namespace Consuela.Service.Pages
             _profileSaver.Save(Edited);
 
             return RedirectToPage("ProfileView");
+        }
+
+        private bool ArePathsEqual(string left, string right)
+        {
+            //Remove trailing slashes for full comparison
+            var diLeft = left.TrimEnd('\\');
+            var diRight = right.TrimEnd('\\');
+
+            var areEqual = diLeft == diRight;
+
+            return areEqual;
         }
     }
 }

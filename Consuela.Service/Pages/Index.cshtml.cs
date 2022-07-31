@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Consuela.Lib.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Consuela.Service.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        public string NextRun { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        private readonly ISchedulingService _schedulingService;
+
+        public IndexModel(ISchedulingService schedulingService)
         {
-            _logger = logger;
+            _schedulingService = schedulingService;
+
+            NextRun = _schedulingService.GetEndDate().ToString("MM/dd/yyyy");
         }
 
         public void OnGet()
