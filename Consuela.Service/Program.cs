@@ -1,4 +1,5 @@
 using Consuela.Service.Startup;
+using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
 namespace Consuela.Service
@@ -9,15 +10,25 @@ namespace Consuela.Service
         //https://github.com/serilog/serilog-extensions-hosting/blob/dev/samples/SimpleServiceSample/Program.cs
         public static int Main(string[] args)
         {
+            //If anything goes wrong it needs to be saved somewhere
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
+                .WriteTo.File(
+                    AppDomain.CurrentDomain.BaseDirectory + "\\Startup.log",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 3)
                 .CreateBootstrapLogger();
 
             try
             {
                 //WebApplication is the host
-                var builder = WebApplication.CreateBuilder(args);
+                //var builder = WebApplication.CreateBuilder(args);
+                var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+                {
+                    Args = args,
+                    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+                });
 
                 //Hang a Windows Service off of the WebApplication host
                 builder.Host.UseWindowsService();
