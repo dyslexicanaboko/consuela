@@ -16,8 +16,8 @@ namespace Consuela.Service.Startup
 
                 //Dependency injection below
                 services.AddSingleton<IAppSettingsService, AppSettingsService>();
-                
                 services.AddTransient<IDateTimeService, DateTimeService>();
+                services.AddTransient<IExcelFileWriterService, ExcelFileWriterService>();
 
                 services.AddSingleton<IProfileSaver, ProfileSaver>();
 
@@ -39,16 +39,21 @@ namespace Consuela.Service.Startup
                 services.AddSingleton<ISchedulingService, SchedulingService>();
 
                 services.AddHostedService<WorkerService>();
-            }).UseSerilog((hostContext, loggerConfiguration) =>
+            }).UseSerilog((hostContext, serviceProvider, LoggerConfiguration) =>
             {
+                var profile = serviceProvider.GetService<IProfile>();
+
+                var path = profile.Audit.Path + "\\Log.log";
+
                 //Since this is configured here, don't do it in the JSON also otherwise the logging will appear twice
-                loggerConfiguration
+                LoggerConfiguration
                     .ReadFrom.Configuration(hostContext.Configuration)
+                    .WriteTo.File(path, rollingInterval: RollingInterval.Day)
                     .WriteTo.Console();
 
                 if (hostContext.HostingEnvironment.IsDevelopment())
                 {
-                    loggerConfiguration.WriteTo.Seq("http://localhost:5341");
+                    LoggerConfiguration.WriteTo.Seq("http://localhost:5341");
                 }
             });
         }
