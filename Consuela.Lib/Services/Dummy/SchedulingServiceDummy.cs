@@ -22,11 +22,21 @@ namespace Consuela.Lib.Services.Dummy
             return DateTime.Now;
         }
 
+        public DateTime? GetLastExecution()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task ScheduleAction(Action method)
         { 
             method();
 
             await Task.CompletedTask;
+        }
+
+        public bool TryExecuteAction()
+        {
+            throw new NotImplementedException();
         }
     }
 }
