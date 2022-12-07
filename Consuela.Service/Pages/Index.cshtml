@@ -25,5 +25,7 @@
         Last Run: @Html.DisplayTextFor(m => m.LastRun)
     </h1>
     @* Need to button debounce here. Disable the submit button upon pressing. Maybe pop up a picture of consuela "I clean" *@
-    <button type="submit" asp-page-handler="Submit">Execute now</button>
+    <form method="post" id="executeNowForm">
+        <button type="submit">Execute now</button>
+    </form>
 </div>

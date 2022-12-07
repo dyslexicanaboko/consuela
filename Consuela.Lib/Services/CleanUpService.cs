@@ -90,7 +90,7 @@ namespace Consuela.Lib.Services
                 }
                 catch (Exception ex)
                 {
-                    results.FileDeleteErrors.Add(f, ex);
+                    results.FileDeleteErrors.TryAdd(f, ex);
                 }
             }
 
@@ -111,7 +111,7 @@ namespace Consuela.Lib.Services
                 }
                 catch (Exception ex)
                 {
-                    results.DirectoryDeleteErrors.Add(folder, ex);
+                    results.DirectoryDeleteErrors.TryAdd(folder, ex);
                 }
             }
         }
@@ -149,7 +149,7 @@ namespace Consuela.Lib.Services
                 {
                     //Just leave these directories behind because of this exception
                     //As a work around using the filePath since I cannot capture the directory only
-                    results.DirectoryDeleteErrors.Add(filePath, ptle);
+                    results.DirectoryDeleteErrors.TryAdd(filePath, ptle);
                 }
             }
 
@@ -168,7 +168,7 @@ namespace Consuela.Lib.Services
                 catch (PathTooLongException ptle)
                 {
                     //Just leave these directories behind because of this exception
-                    results.DirectoryDeleteErrors.Add(path, ptle);
+                    results.DirectoryDeleteErrors.TryAdd(path, ptle);
                 }
             }
 

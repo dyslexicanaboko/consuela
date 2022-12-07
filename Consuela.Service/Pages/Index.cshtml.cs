@@ -32,7 +32,7 @@ namespace Consuela.Service.Pages
 
         }
 
-        public IActionResult OnPostSubmit()
+        public IActionResult OnPost()
         {
             //Feedback needed? Not sure yet.
             //Would be nice to produce the execution results.

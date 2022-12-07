@@ -30,7 +30,11 @@ namespace Consuela.Lib.Services
 
         public List<FileInfoEntity> GetFiles(PathAndPattern target, int daysOld)
         {
-            var files = new DirectoryInfo(target.Path)
+            var dir = new DirectoryInfo(target.Path);
+
+            if(!dir.Exists) return new List<FileInfoEntity>(0);
+
+            var files = dir
                 .GetFiles(target.Pattern, SearchOption.AllDirectories)
                 .Where(x => (_dateTimeService.Now - x.CreationTime).Days > daysOld)
                 .Select(x => new FileInfoEntity(x))
@@ -41,7 +45,11 @@ namespace Consuela.Lib.Services
 
         public List<string> GetEmptyDirectories(PathAndPattern target)
         {
-            var files = new DirectoryInfo(target.Path) //Root
+            var dir = new DirectoryInfo(target.Path);
+
+            if (!dir.Exists) return new List<string>(0);
+
+            var files = dir
                 .GetDirectories("*", SearchOption.AllDirectories) //All folders
                 .Where(x => !x.EnumerateFiles().Any()) //That are empty
                 .Select(x => x.FullName) //Folder names only
