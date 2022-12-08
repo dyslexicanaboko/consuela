@@ -7,6 +7,10 @@ namespace Consuela.Lib.Services
     {
         Task ScheduleAction(Action method);
 
+        bool TryExecuteAction();
+
         DateTime GetEndDate();
+
+        DateTime? GetLastExecution();
     }
 }

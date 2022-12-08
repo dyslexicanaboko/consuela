@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Consuela.Lib.Services
 {
@@ -185,8 +187,8 @@ namespace Consuela.Lib.Services
                     FilesDeleted = results.FilesDeleted.Count,
                     FilesIgnored = results.FilesIgnored.Count
                 },
-                results.DirectoryDeleteErrors,
-                results.FileDeleteErrors
+                DirectoryDeleteErrors = results.DirectoryDeleteErrors.ToDictionary(k => k.Key, v => new ExLog(v.Value)),
+                FileDeleteErrors = results.FileDeleteErrors.ToDictionary(k => k.Key.FullName, v => new ExLog(v.Value))
             };
 
             var options = new JsonSerializerOptions
@@ -200,6 +202,25 @@ namespace Consuela.Lib.Services
 
             //If the file doesn't exist, it will be created
             _fileService.AppendAllText(path, serialized);
+        }
+
+        //This is just to avoid trying to serialize objects that aren't serializable such as IntPnt which can show up in the Target property.
+        private class ExLog
+        {
+            public ExLog(Exception ex)
+            {
+                Type = ex.GetType().Name;
+
+                Message = ex.Message;
+
+                Stacktrace = ex.StackTrace;
+            }
+
+            public string Type { get; set; }
+            
+            public string Message { get; set; }
+            
+            public string Stacktrace { get; set; }
         }
     }
 }

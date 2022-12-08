@@ -21,4 +21,13 @@
     <h1>
         Next Run: @Html.DisplayTextFor(m => m.NextRun)
     </h1>
+    <h1>
+        Last Run: @Html.DisplayTextFor(m => m.LastRun)<br/>
+        @* Can't open folders anymore from browsers. Security concern. For now providing the link which you can copy to your clip board. *@
+        <a href="@(Model.AuditFolder)">Audit Folder</a>
+    </h1>
+    @* Need to button debounce here. Disable the submit button upon pressing. Maybe pop up a picture of consuela "I clean" *@
+    <form method="post" id="executeNowForm">
+        <button type="submit">Execute now</button>
+    </form>
 </div>

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Consuela"
-#define MyAppVersion "1.3.0.1"
+#define MyAppVersion "1.3.0.2"
 #define MyAppPublisher "Dyslexicanaboko"
 #define MyAppURL "https://github.com/dyslexicanaboko/consuela/"
 #define MyAppExeName "Consuela.Service.exe"

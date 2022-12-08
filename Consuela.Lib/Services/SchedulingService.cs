@@ -16,8 +16,10 @@ namespace Consuela.Lib.Services
         private const int OneDay = 86400000; //Milliseconds
         private readonly IProfileSaver _profileSaver;
         private readonly IDateTimeService _dateTimeService;
+        private DateTime? _lastExecution;
         private DateTime _endDate;
         private object _lock = new object();
+        private Action _scheduledMethod;
 
         private IProfile Profile => _profileSaver.Get();
 
@@ -41,10 +43,14 @@ namespace Consuela.Lib.Services
 
         public DateTime GetEndDate() => _endDate;
 
+        public DateTime? GetLastExecution() => _lastExecution;
+
         private void SetEndDate() => _endDate = CalculateEndDate(Profile.Delete.Schedule);
 
         public async Task ScheduleAction(Action method)
         {
+            _scheduledMethod = method;
+
             SetEndDate();
 
             //Interval is going to be set to one day so that each day the timer will check if today is the target date
@@ -63,14 +69,32 @@ namespace Consuela.Lib.Services
                 //If the clean up method is being executed, do not allow the profile change to update anything
                 lock (_lock)
                 {
-                    method(); 
+                    method();
+
+                    _lastExecution = _dateTimeService.Now;
                 }
             }
         }
 
+        public bool TryExecuteAction()
+        {
+            if(_scheduledMethod == null) return false;
+
+            lock (_lock)
+            {
+                _scheduledMethod();
+
+                _lastExecution = _dateTimeService.Now;
+            }
+
+            return true;
+        }
+
         private bool IsElapsed()
         {
-            var isElapsed = _dateTimeService.Now.Date == _endDate.Date;
+            //In a situation where a system sleeps, days could go by and this window will be missed.
+            //This is why greater than or equals is used.
+            var isElapsed = _dateTimeService.Now.Date >= _endDate.Date;
 
             return isElapsed;
         }
